@@ -1,0 +1,16 @@
+DB
+_______
+alterhub_admin
+DcWY;0c@,F(LFfS.
+
+***public folder redirect in live
+https://www.himalayanhost.com/knowledgebase/35/Laravel-Website-Redirecting-orpublic-Folder-to-Main-Domain-using-.htaccess.html
+
+
+
+dec25
+________
+resources\views\site\profile\viewProfile.blade.php
+routes\web.php
+app\Http\Controllers\Site\ProfileController.php
+app\Models\User.php
