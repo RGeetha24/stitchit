@@ -214,7 +214,8 @@
     <!-- Order Notification Box -->
     <div id="newOrderPopup" class="order-notification">
         <div class="notif-left">
-            <img src='{{url("admin/assets/images/logo.png")}}' class="notif-icon">
+            
+            <img src='{{url("site/assets/image/newlogo.jpg")}}' class="notif-icon">
 
             <div class="notif-info">
                 <h3>New Order Received</h3>

@@ -22,7 +22,8 @@ Route::prefix('server-commands')->group(function () {
 //SITE HOME ROUTE
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/topwear', [HomeController::class, 'topwear'])->name('topwear');
-Route::get('/category/{slug}', [HomeController::class, 'masterCategory'])->name('mastercategory.show');
+Route::get('/category/{masterSlug}', [HomeController::class, 'masterCategory'])->name('mastercategory.show');
+Route::get('/category/{masterSlug}/{categorySlug}', [HomeController::class, 'categoryServices'])->name('category.services');
 Route::get('/faq', [ExtrasController::class, 'faq'])->name('faq');
 Route::get('/about', [ExtrasController::class, 'about'])->name('about');
 Route::get('/notification', [ExtrasController::class, 'notification'])->name('notification');

@@ -1,7 +1,8 @@
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <img src='{{url("admin/assets/images/logo/logo.png")}}' class="logo">
+        <img src='{{url("site/assets/image/newlogo.jpg")}}' class="logo" alt="Stitch It Logo">
+        <!-- <img src='{{url("admin/assets/images/logo/logo.png")}}' class="logo"> -->
     </div>
 
     <ul class="menu">
@@ -51,13 +52,13 @@
         @endif
         
         @if($isAdmin || (auth()->check() && auth()->user()->canAccess('View Categories')))
-        <li class="{{ request()->routeIs('admin.category.*', 'admin.categories.*') ? 'active' : '' }}">
+        <li class="{{ request()->routeIs('admin.category.*', 'admin.categories.*', 'admin.services.*') ? 'active' : '' }}">
             <a href="#" class="menu-toggle" data-toggle="category-submenu">
                 <img src='{{url("admin/assets/images/icon/Chart.png")}}' class="menu-icon">
                 Category
                 <span class="toggle-icon">▼</span>
             </a>
-            <ul class="submenu" id="category-submenu" style="display: {{ request()->routeIs('admin.category.*', 'admin.categories.*') ? 'block' : 'none' }};">
+            <ul class="submenu" id="category-submenu" style="display: {{ request()->routeIs('admin.category.*', 'admin.categories.*', 'admin.services.*') ? 'block' : 'none' }};">
                 <li class="{{ request()->routeIs('admin.category.*') ? 'active' : '' }}">
                     <a href="{{route('admin.category.index')}}">
                         <img src='{{url("admin/assets/images/icon/Chart.png")}}' class="menu-icon">
@@ -68,6 +69,12 @@
                     <a href="{{route('admin.categories.index')}}">
                         <img src='{{url("admin/assets/images/icon/Category.png")}}' class="menu-icon">
                         Category
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs('admin.services.*') ? 'active' : '' }}">
+                    <a href="{{route('admin.services.index')}}">
+                        <img src='{{url("admin/assets/images/icon/Setting.png")}}' class="menu-icon">
+                        Services
                     </a>
                 </li>
             </ul>

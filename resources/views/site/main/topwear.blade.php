@@ -1,5 +1,46 @@
 @extends('site.layout.app')
+
 @section('content')
+<style>
+    .service-item.active {
+        border: 2px solid #007bff;
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        transform: scale(1.05);
+    }
+    
+    .select-category-prompt {
+        text-align: center;
+        padding: 60px 20px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        margin: 20px 0;
+    }
+    
+    .select-category-prompt h2 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+    
+    .select-category-prompt p {
+        color: #666;
+        font-size: 16px;
+    }
+    
+    .no-services {
+        text-align: center;
+        padding: 40px 20px;
+        background: #fff3cd;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+    
+    .service-description {
+        font-size: 14px;
+        color: #666;
+        margin-top: 5px;
+    }
+</style>
+
 <!-- 🔹 Top Section: Service Categories + Banner -->
 <section class="alteration-section">
     <!-- Left Column: Service Categories -->
@@ -10,7 +51,8 @@
                 <h4>Select a Category</h4>
                 <div class="service-grid">
                     @forelse($masterCategory->categories as $cat)
-                        <a href="#" class="service-item">
+                        <a href="{{ route('category.services', ['masterSlug' => $masterCategory->slug, 'categorySlug' => $cat->slug]) }}" 
+                           class="service-item {{ isset($selectedCategory) && $selectedCategory->id == $cat->id ? 'active' : '' }}">
                             @if($cat->image)
                                 <img src='{{ asset("uploads/category/".$cat->image) }}' alt="{{ $cat->name }}">
                             @else
@@ -94,46 +136,47 @@
         <!-- 1️⃣ Empty Left Column -->
         <div class="column-empty"></div>
 
-        <!-- 2️⃣ Middle Column: Blouse Alteration Section -->
+        <!-- 2️⃣ Middle Column: Services Section -->
         <div class="alteration-left">
-            <h2>Blouse Alteration Categories</h2>
+            @if(isset($selectedCategory) && isset($services))
+                <h2>{{ $selectedCategory->name }} Services</h2>
 
-            <div class="alteration-item">
-                <div class="item-info">
-                    <h4>Blouse Sleeve Length Alteration</h4>
-                    <p>₹100 • Delivery in 2 days</p>
-                </div>
-                <div class="image-box">
-                    <img src='{{url("site/assets/image/service/Container.png")}}' alt="Blouse Sleeve Length">
-                    <div class="quantity-overlay">
-                        <button>-</button>
-                        <input type="text" value="1">
-                        <button>+</button>
+                @forelse($services as $service)
+                    <div class="alteration-item">
+                        <div class="item-info">
+                            <h4>{{ $service->name }}</h4>
+                            <p>
+                                @if($service->price)
+                                    ₹{{ number_format($service->price, 2) }}
+                                @else
+                                    Price on request
+                                @endif
+                                • Delivery in 2 days
+                            </p>
+                            @if($service->description)
+                                <p class="service-description">{{ Str::limit($service->description, 100) }}</p>
+                            @endif
+                        </div>
+                        <div class="image-box">
+                            @if($service->icon)
+                                <img src='{{ asset("uploads/services/".$service->icon) }}' alt="{{ $service->name }}">
+                            @else
+                                <img src='{{url("site/assets/image/service/Container.png")}}' alt="{{ $service->name }}">
+                            @endif
+                            <button class="add-btn" data-service-id="{{ $service->id }}">Add</button>
+                        </div>
                     </div>
+                @empty
+                    <div class="no-services">
+                        <p>No services available for this category yet.</p>
+                    </div>
+                @endforelse
+            @else
+                <div class="select-category-prompt">
+                    <h2>Please Select a Category</h2>
+                    <p>Choose a category from the left to view available services.</p>
                 </div>
-            </div>
-
-            <div class="alteration-item">
-                <div class="item-info">
-                    <h4>Blouse Length Alteration</h4>
-                    <p>₹200 • Delivery in 2 days</p>
-                </div>
-                <div class="image-box">
-                    <img src='{{url("site/assets/image/service/Packages - Haircut & spa.png")}}' alt="Blouse Length Alteration">
-                    <button class="add-btn">Add</button>
-                </div>
-            </div>
-
-            <div class="alteration-item">
-                <div class="item-info">
-                    <h4>Blouse Neckline Alteration</h4>
-                    <p>₹200 • Delivery in 2 days</p>
-                </div>
-                <div class="image-box">
-                    <img src='{{url("site/assets/image/service/image 533.png")}}' alt="Blouse Neck Alteration">
-                    <button class="add-btn">Add</button>
-                </div>
-            </div>
+            @endif
         </div>
 
         <!-- 3️⃣ Right Column: Cart -->

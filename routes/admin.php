@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\RevenueController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\MasterCategoryController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\RoleController;
 
 // Public admin auth routes (no middleware) - separate login page for admin panel
@@ -26,6 +27,7 @@ Route::middleware(['isAdmin'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
         Route::resource('category', MasterCategoryController::class)->names('category');
         Route::resource('categories', CategoryController::class)->names('categories');
+        Route::resource('services', ServiceController::class)->names('services');
 
         Route::get('/orders', [AdminOrderController::class, 'orders'])->name('orders');
         Route::get('/pickup',[AdminOrderController::class, 'pickup'])->name('pickup');

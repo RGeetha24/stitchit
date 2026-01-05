@@ -4,7 +4,7 @@
     <div class="footer-top">
       <!-- Logo -->
       <div class="footer-logo">
-        <img src='{{url("site/assets/image/logo (2).png")}}' alt="Stitch It Logo">
+        <img src='{{url("site/assets/image/newlogo.jpg")}}' alt="AlterHub Logo">
       </div>
 
       <!-- Footer Links -->

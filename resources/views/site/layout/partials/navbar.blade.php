@@ -2,7 +2,7 @@
 <nav>
     <div class="logo">
         <a href="{{ route('home') }}">
-            <img src='{{url("site/assets/image/logo (2).png")}}' alt="Stitch It Logo">
+            <img src='{{url("site/assets/image/newlogo.jpg")}}' alt="Stitch It Logo">
         </a>
     </div>
 

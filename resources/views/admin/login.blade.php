@@ -1,7 +1,8 @@
 <link href='{{url("admin/assets/css/main.css")}}' rel="stylesheet">
 <div class="login-wrapper">
     <div class="login-left">
-        <img src='{{url("admin/assets/images/logo/logo.png")}}' class="logo" alt="Stitch It Logo">
+        <!-- <img src='{{url("admin/assets/images/logo/logo.png")}}' class="logo" alt="Stitch It Logo"> -->
+        <img src='{{url("site/assets/image/newlogo.jpg")}}' class="logo" alt="Stitch It Logo">
 
         <h2 style="text-align: center;">Log in</h2>
 
