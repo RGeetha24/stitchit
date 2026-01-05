@@ -32,7 +32,9 @@ class User extends Authenticatable
         'shoulder_width',
         'sleeve_length',
         'dress_length',
+        'role'
     ];
+    
 
     /**
      * The attributes that should be hidden for serialization.
@@ -55,5 +57,51 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the roles that belong to the user.
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
+
+    /**
+     * Check if user has a specific role.
+     */
+    public function hasRole($role)
+    {
+        return $this->roles->contains('name', $role);
+    }
+
+    /**
+     * Check if user has a specific permission.
+     */
+    public function hasPermission($permission)
+    {
+        return $this->roles->flatMap->permissions->contains('name', $permission);
+    }
+
+    /**
+     * Check if user is admin or super admin.
+     */
+    public function isAdmin()
+    {
+        // Check simple role field first
+        if ($this->role && in_array(strtolower($this->role), ['admin', 'super admin', 'superadmin'])) {
+            return true;
+        }
+        
+        // Check roles relationship
+        return $this->hasRole('admin') || $this->hasRole('super admin') || $this->hasRole('superadmin');
+    }
+
+    /**
+     * Check if user has permission or is admin.
+     */
+    public function canAccess($permission)
+    {
+        return $this->isAdmin() || $this->hasPermission($permission);
     }
 }

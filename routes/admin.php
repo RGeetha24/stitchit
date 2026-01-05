@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\RevenueController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\MasterCategoryController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\RoleController;
 
 // Public admin auth routes (no middleware) - separate login page for admin panel
 Route::prefix('admin')->as('admin.')->group(function () {
@@ -42,6 +43,17 @@ Route::middleware(['isAdmin'])->group(function () {
         
         Route::get('/financial',[RevenueController::class, 'financial'])->name('financial');
         Route::get('/report',[RevenueController::class, 'report'])->name('report');
+
+        // Roles Management
+        Route::resource('roles', RoleController::class)->names('roles');
+        
+        // Permissions Management
+        Route::get('/permissions', [RoleController::class, 'permissionsIndex'])->name('permissions.index');
+        Route::get('/permissions/create', [RoleController::class, 'permissionsCreate'])->name('permissions.create');
+        Route::post('/permissions', [RoleController::class, 'permissionsStore'])->name('permissions.store');
+        Route::get('/permissions/{permission}/edit', [RoleController::class, 'permissionsEdit'])->name('permissions.edit');
+        Route::put('/permissions/{permission}', [RoleController::class, 'permissionsUpdate'])->name('permissions.update');
+        Route::delete('/permissions/{permission}', [RoleController::class, 'permissionsDestroy'])->name('permissions.destroy');
 
     });
 });

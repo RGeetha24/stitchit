@@ -29,12 +29,12 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Optional: ensure user is admin based on role column
-            if (auth()->user()->role !== 'admin') {
-                Auth::logout();
-                return back()->withErrors([
-                    'email' => 'You are not authorized to access the admin panel.',
-                ])->onlyInput('email');
-            }
+            // if (auth()->user()->role !== 'admin') {
+            //     Auth::logout();
+            //     return back()->withErrors([
+            //         'email' => 'You are not authorized to access the admin panel.',
+            //     ])->onlyInput('email');
+            // }
 
             return redirect()->route('admin.dashboard');
         }

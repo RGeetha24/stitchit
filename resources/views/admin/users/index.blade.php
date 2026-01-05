@@ -62,14 +62,14 @@
                                         >
                                             <i class="ri-eye-line"></i>
                                         </button>
-                                        <!-- <button
+                                        <button
                                             type="button"
                                             class="icon-btn"
                                             title="Edit"
                                             onclick="editUser({{ $user->id }})"
                                         >
                                             <i class="ri-edit-line"></i>
-                                        </button> -->
+                                        </button>
                                         <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
                                             @csrf
                                             @method('DELETE')
@@ -164,9 +164,10 @@
                     <div>
                         <label style="display: block; margin-bottom: 5px; font-weight: 600;">Role *</label>
                         <select name="role" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                            <option value="user">User</option>
-                            <option value="tailor">Tailor</option>
-                            <option value="store">Store</option>
+                            <option value="">Select Role</option>
+                            @foreach($roles as $role)
+                            <option value="{{ $role->slug }}">{{ $role->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div>
@@ -219,9 +220,10 @@
                     <div>
                         <label style="display: block; margin-bottom: 5px; font-weight: 600;">Role *</label>
                         <select name="role" id="edit_role" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                            <option value="user">User</option>
-                            <option value="tailor">Tailor</option>
-                            <option value="store">Store</option>
+                            <option value="">Select Role</option>
+                            @foreach($roles as $role)
+                            <option value="{{ $role->slug }}">{{ $role->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div>
@@ -343,9 +345,9 @@ function editUser(userId) {
             document.getElementById('edit_name').value = user.name || '';
             document.getElementById('edit_email').value = user.email || '';
             document.getElementById('edit_phone').value = user.phone || '';
-            document.getElementById('edit_role').value = user.role || 'user';
+            document.getElementById('edit_role').value = user.role || '';
             document.getElementById('edit_gender').value = user.gender || '';
-            document.getElementById('edit_password').value = '';
+            // document.getElementById('edit_password').value = '';
             
             document.getElementById('editUserForm').action = `/admin/users/${userId}`;
             document.getElementById('editUserModal').style.display = 'block';

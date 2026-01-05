@@ -220,8 +220,8 @@
 
     <div class="profile-section">
       <div class="profile-pic" id="profilePicContainer">
-        <img id="profileImage" src="{{ $user->profile_picture ? asset($user->profile_picture) : url('site/assets/image/testimonial.png') }}" alt="Profile Picture">
-      </div>
+        <img id="profileImage" src="{{ $user->profile_picture ? asset('uploads/profile/'.$user->profile_picture) : url('site/assets/image/testimonial.png') }}" alt="Profile Picture">
+      </div> 
       <div class="btn-group">
         <label for="fileInput" class="btn-upload"><span class="material-icons">add</span>Upload new picture</label>
         <input type="file" id="fileInput" name="profile_picture" accept="image/*" style="display:none;">

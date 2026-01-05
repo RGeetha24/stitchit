@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -13,7 +14,8 @@ class UserController extends Controller
     public function index()
     {
         $users = User::where('role', '!=', 'admin')->orderBy('created_at', 'desc')->get();
-        return view('admin.users.index', compact('users'));
+        $roles = Role::orderBy('name')->get();
+        return view('admin.users.index', compact('users', 'roles'));
     }
 
     public function show($id)
@@ -28,14 +30,27 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
-            'role' => 'required|in:admin,user,tailor',
+            'role' => 'required|exists:roles,slug',
             'phone' => 'nullable|string|max:20',
             'gender' => 'nullable|in:Male,Female,Other',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        
+        // Get the role
+        $roleSlug = $validated['role'];
+        $role = Role::where('slug', $roleSlug)->first();
+        
+        // Store role name in the role column for backward compatibility
+        $validated['role'] = $role ? $role->name : $roleSlug;
 
-        User::create($validated);
+        // Create user
+        $user = User::create($validated);
+        
+        // Sync the role to the pivot table
+        if ($role) {
+            $user->roles()->sync([$role->id]);
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully!');
     }
@@ -47,7 +62,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'role' => 'required|in:admin,user,tailor',
+            'role' => 'required|exists:roles,slug',
             'phone' => 'nullable|string|max:20',
             'gender' => 'nullable|in:Male,Female,Other',
             'password' => 'nullable|string|min:8',
@@ -58,8 +73,21 @@ class UserController extends Controller
         } else {
             unset($validated['password']);
         }
+        
+        // Get the role
+        $roleSlug = $validated['role'];
+        $role = Role::where('slug', $roleSlug)->first();
+        
+        // Store role name in the role column for backward compatibility
+        $validated['role'] = $role ? $role->name : $roleSlug;
 
+        // Update user
         $user->update($validated);
+        
+        // Sync the role to the pivot table
+        if ($role) {
+            $user->roles()->sync([$role->id]);
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully!');
     }

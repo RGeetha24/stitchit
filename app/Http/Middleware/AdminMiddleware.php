@@ -17,11 +17,13 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            if (Auth::user()->role == 'admin') {
+            // if (Auth::user()->role == 'admin') {
+            //     return $next($request);
+            // } else {
+            //     abort(401, 'Unauthorized action.');
+            // }
                 return $next($request);
-            } else {
-                abort(401, 'Unauthorized action.');
-            }
+
         } else {
             // Redirect unauthenticated users to admin login page
             return redirect()->route('admin.login');
