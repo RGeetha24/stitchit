@@ -181,47 +181,101 @@
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
             <h2>Order Details</h2>
-            <span class="order-number"><b>Order Number: #12346</b></span>
+            <span class="order-number"><b>Order Number: {{ $order->order_number }}</b></span>
         </div>
 
         <p style="color:#666;font-size:15px;"><b>View the detailed order details for your past order.<b></p>
 
         <!-- Item Details -->
         <h3 class="section-title">Item Details</h3>
+        @foreach($order->items as $item)
         <div class="item-details">
-            <img src='{{url("site/assets/image/product/Frame 33.png")}}' alt="Shirt">
+            @php
+                $imagePath = $item->service && $item->service->icon 
+                    ? url('uploads/services/' . $item->service->icon)
+                    : url("site/assets/image/product/Frame 33.png");
+            @endphp
+            <img src='{{ $imagePath }}' alt="{{ $item->item_name }}">
             <div class="item-info">
-                <p><span>Garment:</span> Shirt</p>
-                <p><span>Alteration Type:</span> Length Shortening</p>
-                <p><span>User Instructions:</span> Reduce Shirt Length by 2 inches</p>
-                <p><span>Measurement Type:</span> Provide Alteration Instructions</p>
+                <p><span>Garment:</span> {{ $item->item_name }}</p>
+                @if($item->service)
+                <p><span>Service:</span> {{ $item->service->name }}</p>
+                @endif
+                @if($item->item_description)
+                <p><span>Description:</span> {{ $item->item_description }}</p>
+                @endif
+                @if($item->alteration_details && is_array($item->alteration_details))
+                    @foreach($item->alteration_details as $key => $value)
+                        <p><span>{{ ucfirst(str_replace('_', ' ', $key)) }}:</span> {{ $value }}</p>
+                    @endforeach
+                @endif
+                <p><span>Measurement Type:</span> {{ ucfirst(str_replace('_', ' ', $order->measurement_method ?? 'N/A')) }}</p>
+                <p><span>Quantity:</span> {{ $item->quantity }}</p>
+                <p><span>Price:</span> ₹{{ number_format($item->total_price, 2) }}</p>
             </div>
         </div>
+        @endforeach
 
         <!-- Price Details -->
         <h3 class="section-title">Price Details</h3>
         <div class="price-details">
-            <div><b><span>Subtotal</span></b><b><span>₹250</span></b></div>
-            <div><b><span>Discount</span></b><b><span>- ₹60</span></b></div>
-            <div><b><span>GST</span></b><b><span>₹27</span></b></div>
-            <div class="total"><b><span>Total</span></b><b><span>₹217</span></b></div>
+            <div><b><span>Subtotal</span></b><b><span>₹{{ number_format($order->subtotal, 2) }}</span></b></div>
+            @if($order->discount > 0)
+            <div><b><span>Discount</span></b><b><span>- ₹{{ number_format($order->discount, 2) }}</span></b></div>
+            @endif
+            @if($order->delivery_charge > 0)
+            <div><b><span>Delivery Charges</span></b><b><span>₹{{ number_format($order->delivery_charge, 2) }}</span></b></div>
+            @endif
+            @if($order->tax > 0)
+            <div><b><span>GST</span></b><b><span>₹{{ number_format($order->tax, 2) }}</span></b></div>
+            @endif
+            <div class="total"><b><span>Total</span></b><b><span>₹{{ number_format($order->total, 2) }}</span></b></div>
         </div>
 
         <!-- Address -->
         <h3 class="section-title">Address</h3>
         <div class="address-section">
-            <p><strong>AS Building, Sannudhi Society</strong><span class="address-tag">HOME</span></p>
-            <p style="    margin-bottom: 6px;
-    font-size: 14px;
-    color: #333;
-    font-weight: 500;">1st Main Road, Venkateshwara Layout, S.G. Palya, Bengaluru, Karnataka, India</p>
+            @if($order->address)
+            <p><strong>{{ $order->address->house_no ?? '' }} {{ $order->address->locality ?? '' }}</strong>
+                <span class="address-tag">{{ strtoupper($order->address->address_type ?? 'HOME') }}</span>
+            </p>
+            <p style="margin-bottom: 6px; font-size: 14px; color: #333; font-weight: 500;">
+                {{ $order->address->full_address }}
+            </p>
+            @else
+            <p style="color: #999;">Address information not available</p>
+            @endif
         </div>
 
         <!-- Contact Details -->
         <h3 class="section-title">Contact Details</h3>
         <div class="contact-section">
-            <p><strong><b>Phone number:</strong> +91 9890859319</b></p>
-            <p><strong><b>Email ID:</strong> smitapatel@gmail.com</b></p>
+            @if($order->address)
+            <p><strong><b>Phone number:</strong> {{ $order->address->phone ?? $order->user->phone ?? 'N/A' }}</b></p>
+            <p><strong><b>Email ID:</strong> {{ $order->address->email ?? $order->user->email ?? 'N/A' }}</b></p>
+            @else
+            <p><strong><b>Phone number:</strong> {{ $order->user->phone ?? 'N/A' }}</b></p>
+            <p><strong><b>Email ID:</strong> {{ $order->user->email ?? 'N/A' }}</b></p>
+            @endif
+        </div>
+
+        <!-- Order Status & Dates -->
+        <h3 class="section-title">Order Status</h3>
+        <div class="contact-section">
+            <p><strong><b>Status:</strong> <span style="color: #007f5f;">{{ $order->status }}</span></b></p>
+            <p><strong><b>Order Date:</strong> {{ $order->created_at->format('d M Y, h:i A') }}</b></p>
+            @if($order->pickup_date)
+            <p><strong><b>Pickup Date:</strong> {{ $order->pickup_date->format('d M Y') }}</b></p>
+            @endif
+            @if($order->expected_delivery_date)
+            <p><strong><b>Expected Delivery:</strong> {{ $order->expected_delivery_date->format('d M Y') }}</b></p>
+            @endif
+            @if($order->payment_method)
+            <p><strong><b>Payment Method:</strong> {{ ucfirst($order->payment_method) }}</b></p>
+            @endif
+            @if($order->payment_status)
+            <p><strong><b>Payment Status:</strong> {{ ucfirst($order->payment_status) }}</b></p>
+            @endif
         </div>
     </div>
 </body>
