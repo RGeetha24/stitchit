@@ -4,9 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="icon" type="image/x-icon" href='{{url("site/assets/image/fav-removebg-preview.png")}}')}}'>
 
-  <title>Checkout | Stitch It</title>
+  <title>Checkout | AlterHub</title>
   <link href='{{url("site/assets/css/style.css")}}' rel="stylesheet">
 
   <style>
@@ -502,7 +503,7 @@
   <div class="checkout-container">
     <div class="checkout-header">
       <a href="{{route('home')}}">
-        <img src='{{url("site/assets/image/logo (2).png")}}' alt="Stitch It Logo">
+        <img src='{{url("site/assets/image/newlogo.jpg")}}' alt="Stitch It Logo">
       </a>
       <h2>Checkout</h2>
     </div>
@@ -511,10 +512,12 @@
       <!-- Left Section -->
       <div class="checkout-left">
 
+        @if($discount > 0)
         <div class="offer-note">
           <img src='{{url("site/assets/image/Vector (1).png")}}' alt="Coupon" class="coupon-icon">
-          <span>Saving ₹100 on this order</span>
+          <span>Saving ₹{{ number_format($discount, 2) }} on this order</span>
         </div>
+        @endif
 
         <div class="section">
           <div class="section-header">
@@ -524,124 +527,7 @@
             </a>
           </div>
         </div>
-
-
-
-
-        <!-- Popup Modal -->
-        <!-- Trigger Button -->
-        <div class="section">
-          <div class="section-header" id="openPopup">
-            <img src='{{url("site/assets/image/icon/ph_note-fill.png")}}' alt="" style="width:22px; height:22px; margin:0 6px;">
-            Alteration Instructions
-          </div>
-        </div>
-
-        <!-- Popup -->
-        <div class="popup-overlay" id="alterationPopup">
-          <div class="popup-content">
-            <button class="close-popup" id="closePopup">&times;</button>
-            <h2>Alteration Instructions</h2>
-            <!-- Right Column -->
-            <div class="right-column">
-              <div class="alteration-group">
-                <h4>Blouse Length Alteration</h4>
-                <div class="alteration-option">
-                  <label><input type="radio" name="blouse-length" checked> Shorten blouse length by</label>
-                  <select class="alteration-select">
-                    <option>1"</option>
-                    <option>2"</option>
-                    <option>3"</option>
-                  </select>
-                </div>
-
-                <div class="alteration-option">
-                  <label><input type="radio" name="blouse-length"> Increase blouse length by</label>
-                  <select class="alteration-select">
-                    <option>1"</option>
-                    <option>2"</option>
-                    <option>3"</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="alteration-group">
-                <h4>Blouse Sleeve Length Alteration</h4>
-                <div class="alteration-option">
-                  <label><input type="radio" name="sleeve-length" checked> Reduce blouse sleeve length by</label>
-                  <select class="alteration-select">
-                    <option>1"</option>
-                    <option>2"</option>
-                    <option>3"</option>
-                  </select>
-                </div>
-
-                <div class="alteration-option">
-                  <label><input type="radio" name="sleeve-length"> Increase blouse sleeve length by</label>
-                  <select class="alteration-select">
-                    <option>1"</option>
-                    <option>2"</option>
-                    <option>3"</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="alteration-group">
-                <h4>Blouse Neckline Alteration</h4>
-                <div class="alteration-option">
-                  <label><input type="radio" name="neckline" checked> Deepen neckline by</label>
-                  <select class="alteration-select">
-                    <option>1"</option>
-                    <option>2"</option>
-                    <option>3"</option>
-                  </select>
-                </div>
-
-                <div class="alteration-option">
-                  <label><input type="radio" name="neckline"> Raise the neckline by</label>
-                  <select class="alteration-select">
-                    <option>1"</option>
-                    <option>2"</option>
-                    <option>3"</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- Left Column -->
-            <div class="left-column">
-              <div class="special-instructions">
-                <h4>Add Special Instructions</h4>
-                <textarea placeholder="Type or Record instructions here..."></textarea>
-                <div class="instruction-icons">
-                  <button class="mic-btn" style="background-color: #f7c226;"> <img src='{{url("site/assets/image/icon/material-symbols_mic.png")}}' alt="" style="width:22px; height:22px; margin:0 6px;">
-                  </button>
-                  <button class="send-btn"> <img src='{{url("site/assets/image/icon/Group 1000002489.png")}}' alt="" style="width:22px; height:22px; margin:0 6px;">
-                  </button>
-                </div>
-              </div>
-
-              <div class="file-upload">
-                <h4>Upload Garment Image</h4>
-                <input type="file" id="fileInput">
-              </div>
-
-              <div class="quantity-section">
-                <h4>Enter the Quantity/Number of Garments</h4>
-                <div class="quantity-box">
-                  <button class="qty-btn" id="decrease">-</button>
-                  <input type="text" value="1" class="qty-input" id="quantity">
-                  <button class="qty-btn" id="increase">+</button>
-                </div>
-              </div>
-
-            </div>
-
-
-
-            <button class="proceed-btn">Proceed to Next Step</button>
-          </div>
-        </div>
+        <!-- include alterationInstructions partial -->
 
         <div class="section">
           <div class="section-header" id="openAddressPopup" style="cursor:pointer;">
@@ -651,105 +537,7 @@
           </div>
         </div>
 
-        <div class="popup-overlay" id="addressPopup" aria-hidden="true">
-          <div class="address-popup">
-
-            <button class="close-popup" id="closeAddressPopup">&times;</button>
-
-            <h2 class="popup-title">Select Address</h2>
-
-            <div class="search-wrapper">
-              <img src='{{url("site/assets/image/icon/Vector (4).png")}}' class="search-icon" alt="search">
-              <input type="text"
-                id="searchAddress"
-                class="search-box"
-                placeholder="Search for your location/society/apartment">
-            </div>
-
-
-            <button id="useCurrentLocation" class="location-btn">
-              <img src='{{url("site/assets/image/icon/mage_location-fill.png")}}' alt="Location" class="location-icon">
-              Use current location
-            </button>
-
-
-            <h3 class="saved-heading" style="color: #431e1e;">Select Saved Addresses</h3>
-
-            <div class="saved-address-card">
-              <div class="addr-top">
-                <b class="addr-title" style="margin-left: 25px;color:#431e1e">A5 Building, Samrudhi Society</b>
-                <span class="addr-tag">HOME</span>
-              </div>
-
-              <p class="addr-text">
-                <img src='{{url("site/assets/image/icon/tdesign_location-filled.png")}}' class="addr-icon">
-                2nd Main Road, Near DK University, Trin Nagar, Pune, Maharashtra, India
-              </p>
-            </div>
-
-            <div class="saved-address-card">
-              <div class="addr-top">
-                <b class="addr-title" style="margin-left: 25px;color:#431e1e">Zolo Belair - Student PG | SG Palya</b>
-                <span class="addr-tag">PG</span>
-              </div>
-
-              <p class="addr-text">
-                <img src='{{url("site/assets/image/icon/tdesign_location-filled.png")}}' class="addr-icon">
-                1st Main Road, Venkateshwara Layout, SG Palya, Bengaluru, Karnataka, India
-              </p>
-            </div>
-
-
-            <button id="openAddAddressPopup" class="add-address-btn">+ Add New Address</button>
-
-            <button class="proceed-btn">Proceed to Next Step</button>
-
-          </div>
-        </div>
-
-
-        <div class="popup-overlay" id="newAddressPopup" aria-hidden="true">
-          <div class="popup">
-            <button class="close-popup" id="closeNewAddress">&times;</button>
-            <h2>New Address</h2>
-
-            <form class="address-form" onsubmit="event.preventDefault();">
-              <label>Full Name</label>
-              <input type="text" placeholder="Enter full name" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e7e7e7;">
-
-              <label style="display:block;margin-top:8px;">Contact</label>
-              <div class="contact-group" style="display:flex; gap:8px;">
-                <input type="text" value="+91" readonly style="width:70px;padding:10px;border-radius:8px;border:1px solid #e7e7e7;">
-                <input type="text" placeholder="xxxx - xxxx" style="flex:1;padding:10px;border-radius:8px;border:1px solid #e7e7e7;">
-              </div>
-
-              <label style="display:block;margin-top:8px;">Email</label>
-              <input type="email" placeholder="Enter email address" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e7e7e7;">
-
-              <label style="display:block;margin-top:8px;">House no/Building/Street</label>
-              <input type="text" placeholder="Enter complete address" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e7e7e7;">
-
-              <label style="display:block;margin-top:8px;">Locality</label>
-              <input type="text" placeholder="Enter locality" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e7e7e7;">
-
-              <div class="city-pincode" style="display:flex; gap:8px; margin-top:8px;">
-                <input type="text" placeholder="City" style="flex:1; padding:10px;border-radius:8px;border:1px solid #e7e7e7;">
-                <input type="text" placeholder="Pincode" style="width:120px; padding:10px;border-radius:8px;border:1px solid #e7e7e7;">
-              </div>
-
-              <p class="save-label" style="margin-top:8px;">Save as</p>
-              <div class="save-type" style="display:flex; gap:10px;">
-                <button type="button" class="seg-btn" data-value="Home">Home</button>
-                <button type="button" class="seg-btn" data-value="Office">Office</button>
-                <button type="button" class="seg-btn" data-value="Other">Other</button>
-              </div>
-
-              <div style="margin-top:12px;">
-                <button class="primary-btn" id="saveNewAddressBtn">Save New Address</button>
-              </div>
-            </form>
-          </div>
-        </div>
+        @include('site.measurement.partials.address')
 
         <div class="section" style="margin-top:14px;">
           <div class="section-header" id="openTimeSlotManually" class="secondary-link">
@@ -758,108 +546,17 @@
             Time Slot
           </div>
         </div>
-        <div class="popup-overlay" id="timeSlotPopup" aria-hidden="true">
-          <div class="popup" role="dialog" aria-modal="true" aria-labelledby="tsTitle">
-            <button class="close-popup" id="closeTimeSlot">&times;</button>
-            <h2 id="tsTitle">Select Time Slot</h2>
+        @include('site.measurement.partials.timeslot')
 
-            <div class="form-group">
-              <label style="font-weight:600;">Pick Up Date</label>
-              <input class="date-input" type="date" id="pickupDate" />
-            </div>
-
-            <div class="form-group">
-              <label style="font-weight:600;">Pick Up Time</label>
-              <div class="days-btns" id="dayButtons">
-                <button type="button" class="seg-btn day-btn active" data-day="today">Today</button>
-                <button type="button" class="seg-btn day-btn" data-day="tomorrow">Tomorrow</button>
-                <button type="button" class="seg-btn day-btn" data-day="14july">14th July</button>
-                <button type="button" class="seg-btn day-btn" data-day="15july">15th July</button>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label style="font-weight:600;">Available Time Slots</label>
-              <div class="time-slots" id="timeSlots">
-                <div class="time-slot active" data-slot="9-11">⏱ 9 am - 11 am</div>
-                <div class="time-slot" data-slot="11-1">⏱ 11 am - 1 pm</div>
-                <div class="time-slot" data-slot="1-3">⏱ 1 pm - 3 pm</div>
-              </div>
-            </div>
-
-            <div class="expected">
-              <div style="font-size:13px; color:#333;"><strong>Expected Delivery date</strong></div>
-              <div class="muted" id="expectedDate">Saturday, 18th August, 2025</div>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <label style="font-weight:600;">Fast Delivery (within 2 days)</label>
-                <div class="muted">₹50 extra</div>
-              </div>
-              <label class="toggle">
-                <input type="checkbox" id="fastDeliveryToggle">
-              </label>
-            </div>
-
-            <div style="display:flex; gap:10px;">
-              <button class="secondary-link" id="timeBack">Back</button>
-              <button class="primary-btn" id="timeProceed">Proceed to Next Step</button>
-            </div>
-          </div>
-        </div>
         <div class="section" style="margin-top:16px;">
           <div class="section-header">
             <img src='{{url("site/assets/image/icon/majesticons_money.png")}}' alt="" style="width:22px; height:22px; margin:0 6px;">
             Payment Method
           </div>
         </div>
-        <div class="popup-overlay" id="paymentPopup" aria-hidden="true">
-          <div class="popup" role="dialog" aria-modal="true" aria-labelledby="payTitle">
-            <button class="close-popup" id="closePayment">&times;</button>
-            <h2 id="payTitle">Payment</h2>
+        
+        @include('site.measurement.partials.payment')
 
-            <div style="margin-bottom:10px;" class="form-group">
-              <div class="payment-methods">
-                <div class="pm active" data-method="upi" id="pm-upi">UPI</div>
-                <div class="pm" data-method="card" id="pm-card">Credit / Debit Card</div>
-              </div>
-            </div>
-
-            <div id="pmDetails">
-              <!-- UPI box -->
-              <div class="upi-box" id="upiBox">
-                <p style="margin:0 0 8px;">Scan the UPI QR or enter UPI ID</p>
-                <div style="display:flex; gap:10px; align-items:center;">
-                  <div style="width:120px;height:120px;background:#f2f2f2;border-radius:10px;display:flex;align-items:center;justify-content:center;">QR</div>
-                  <div style="flex:1;">
-                    <div style="margin-bottom:8px;"><strong>example@upi</strong></div>
-                    <div class="muted">After paying, upload the payment screenshot to confirm.</div>
-                    <div style="margin-top:8px;">
-                      <input type="file" id="upiScreenshot">
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Card box -->
-              <div class="card-box" id="cardBox" style="display:none; margin-top:10px;">
-                <label style="display:block; font-weight:600;">Card Details</label>
-                <input type="text" placeholder="Card Holder Name" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e7e7e7; margin-bottom:8px;">
-                <input type="text" placeholder="Card number" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e7e7e7; margin-bottom:8px;">
-                <div style="display:flex; gap:8px;">
-                  <input type="text" placeholder="MM/YY" style="flex:1; padding:10px; border-radius:8px; border:1px solid #e7e7e7;">
-                  <input type="text" placeholder="CVV" style="width:120px; padding:10px; border-radius:8px; border:1px solid #e7e7e7;">
-                </div>
-              </div>
-            </div>
-
-            <div style="margin-top:14px; display:flex; gap:10px;">
-              <button class="secondary-link" id="paymentBack">Back</button>
-              <button class="primary-btn" id="placeOrderBtn">Place Order</button>
-            </div>
-          </div>
-        </div>
         <!-- ================== Order Confirmation Popup ================== -->
         <div class="popup-overlay" id="orderConfirmPopup" aria-hidden="true">
           <div class="popup" role="dialog" aria-modal="true">
@@ -884,104 +581,136 @@
         </p>
       </div>
 
-      <!-- Right Section -->
-      <div class="checkout-right">
-        <div class="order-item">
-          <div class="item-header">
-            <span class="item-name">Blouse Sleeve Length Alteration</span>
-            <div class="item-actions">
-              <div class="quantity-box">
-                <button class="qty-btn">-</button>
-                <input type="text" value="1" class="qty-input">
-                <button class="qty-btn">+</button>
-              </div>
-              <span class="item-price">₹100</span>
+        <!-- Payments Summary Section -->
+        <div class="checkout-right">
+
+            <!-- Order Items -->
+            @forelse($cartItems as $item)
+            <div class="order-item">
+                <div class="item-header">
+                    <span class="item-name">{{ $item->service->name ?? 'Service' }}</span>
+                    <div class="item-actions">
+                        <div class="quantity-box">
+                            <button class="qty-btn" data-item-id="{{ $item->id }}" data-action="decrease">-</button>
+                            <input type="text" value="{{ $item->quantity }}" class="qty-input" data-item-id="{{ $item->id }}" readonly>
+                            <button class="qty-btn" data-item-id="{{ $item->id }}" data-action="increase">+</button>
+                        </div>
+                        <span class="item-price">₹{{ number_format($item->price, 2) }}</span>
+                    </div>
+                </div>
+
+                <ul class="item-details">
+                    @if($item->notes)
+                        @foreach(explode('|', $item->notes) as $note)
+                            <li>{{ trim($note) }}</li>
+                        @endforeach
+                    @endif
+                    <li>Quantity - {{ $item->quantity }}</li>
+                    <li>Subtotal - ₹{{ number_format($item->price * $item->quantity, 2) }}</li>
+                </ul>
+
+                <!-- <div class="edit-link" style="cursor: pointer;">Edit measurements</div> -->
             </div>
-          </div>
-
-          <ul class="item-details">
-            <li>Length to be reduced by -1 inches</li>
-            <li>Quantity - 1</li>
-          </ul>
-
-          <div class="edit-link">Edit measurements</div>
-        </div>
-
-
-
-        <div class="order-item">
-          <div class="item-header">
-            <span class="item-name">Blouse Sleeve Length Alteration</span>
-            <div class="item-actions">
-              <div class="quantity-box">
-                <button class="qty-btn">-</button>
-                <input type="text" value="1" class="qty-input">
-                <button class="qty-btn">+</button>
-              </div>
-              <span class="item-price">₹100</span>
+            @empty
+            <div class="order-item">
+                <p style="text-align: center; padding: 20px; color: #666;">
+                    Your cart is empty. <a href="{{ route('home') }}" style="color: #00796B; text-decoration: underline;">Browse services</a>
+                </p>
             </div>
-          </div>
+            @endforelse
 
-          <ul class="item-details">
-            <li>Length to be reduced by -1 inches</li>
-            <li>Quantity - 1</li>
-          </ul>
-
-          <div class="edit-link">Edit measurements</div>
-        </div>
-
-        <div class="order-item">
-          <div class="item-header">
-            <span class="item-name">Blouse Sleeve Length Alteration</span>
-            <div class="item-actions">
-              <div class="quantity-box">
-                <button class="qty-btn">-</button>
-                <input type="text" value="1" class="qty-input">
-                <button class="qty-btn">+</button>
-              </div>
-              <span class="item-price">₹100</span>
+            <!-- Coupons and Offers -->
+            <div class="summary-box coupon-box">
+                <div class="summary-row coupon-row">
+                    <div class="coupon-left">
+                        <img src='{{url("site/assets/image/Vector.png")}}' alt="Coupon" class="coupon-icon">
+                        <span>Coupons and offers</span>
+                    </div>
+                    <span class="offer-count">{{ $availableOffers }} offers</span>
+                </div>
             </div>
-          </div>
 
-          <ul class="item-details">
-            <li>Length to be reduced by -1 inches</li>
-            <li>Quantity - 1</li>
-          </ul>
-
-          <div class="edit-link">Edit measurements</div>
-        </div>
-
-        <div class="summary-box">
-          <div class="summary-row coupon-row">
-            <div class="coupon-left">
-              <img src='{{url("site/assets/image/Vector.png")}}' alt="Coupon" class="coupon-icon">
-              <span>Coupons and offers</span>
+            <!-- Payment Summary -->
+            <div class="summary-box payment-summary">
+                <span class="summary-title">Payment Summary</span>
+                <div class="summary-row">
+                    <span>Item total</span>
+                    <span>
+                        <!-- @if($discount > 0)
+                            <s>₹{{ number_format($originalTotal, 2) }}</s> 
+                        @endif -->
+                        ₹{{ number_format($subtotal, 2) }}
+                    </span>
+                </div>
+                <div class="summary-row">
+                    <span>Taxes and Fee</span>
+                    <span>₹{{ number_format($taxesAndFees, 2) }}</span>
+                </div>
+                <div class="summary-row summary-total">
+                    <span>Total amount</span>
+                    <span>₹{{ number_format($totalAmount, 2) }}</span>
+                </div>
             </div>
-            <span class="offer-count">2 offers</span>
-          </div>
+
         </div>
 
-        <div class="summary-box">
-          <span style="font-size: larger;
-    font-weight: 700;">Payment Summary</span>
-          <div class="summary-row"><span>Item total</span><span><s>₹550</s> ₹450</span></div>
-          <div class="summary-row"><span>Taxes and Fee</span><span>₹80</span></div>
-          <div class="summary-row summary-total"><span>Total amount</span><span>₹530</span></div>
-        </div>
       </div>
     </div>
   </div>
 
 
   <script>
+    // Quantity update functionality for cart items
     document.querySelectorAll('.order-item').forEach(item => {
       const input = item.querySelector('.qty-input');
+      const itemId = input?.getAttribute('data-item-id');
+      
       item.querySelectorAll('.qty-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
+          if (!itemId) return;
+          
           let value = parseInt(input.value) || 1;
-          if (btn.textContent === '+') value++;
-          if (btn.textContent === '-' && value > 1) value--;
+          const action = btn.getAttribute('data-action');
+          
+          if (action === 'increase') {
+            value++;
+          } else if (action === 'decrease' && value > 1) {
+            value--;
+          } else {
+            return; // Don't allow quantity below 1
+          }
+          
+          // Update UI optimistically
           input.value = value;
+          
+          // Send AJAX request to update cart
+          try {
+            const response = await fetch(`/cart/update/${itemId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+              },
+              body: JSON.stringify({ quantity: value })
+            });
+            
+            if (response.ok) {
+              const data = await response.json();
+              // Reload page to update all totals
+              if (data.success) {
+                location.reload();
+              }
+            } else {
+              // Revert on error
+              input.value = action === 'increase' ? value - 1 : value + 1;
+              alert('Failed to update quantity. Please try again.');
+            }
+          } catch (error) {
+            console.error('Error updating cart:', error);
+            // Revert on error
+            input.value = action === 'increase' ? value - 1 : value + 1;
+            alert('An error occurred. Please try again.');
+          }
         });
       });
     });
@@ -1020,106 +749,135 @@
 
     /* ---------- initialize previous popup triggers ---------- */
     // Alteration popup open/close handled already via IDs
-    document.getElementById('openPopup').addEventListener('click', () => showPopup('alterationPopup'));
-    document.getElementById('closePopup').addEventListener('click', () => hidePopup('alterationPopup'));
+    const openPopup = document.getElementById('openPopup');
+    const closePopup = document.getElementById('closePopup');
+    if (openPopup) openPopup.addEventListener('click', () => showPopup('alterationPopup'));
+    if (closePopup) closePopup.addEventListener('click', () => hidePopup('alterationPopup'));
 
     // Address popup open
-    document.getElementById('openAddressPopup').addEventListener('click', () => showPopup('addressPopup'));
-    document.getElementById('closeAddressPopup').addEventListener('click', () => hidePopup('addressPopup'));
-    document.getElementById('openAddAddressPopup').addEventListener('click', () => {
-      hidePopup('addressPopup');
-      setTimeout(() => showPopup('newAddressPopup'), 180);
-    });
-    document.getElementById('closeNewAddress').addEventListener('click', () => hidePopup('newAddressPopup'));
+    const openAddressPopup = document.getElementById('openAddressPopup');
+    const closeAddressPopup = document.getElementById('closeAddressPopup');
+    const openAddAddressPopup = document.getElementById('openAddAddressPopup');
+    const closeNewAddress = document.getElementById('closeNewAddress');
+    
+    if (openAddressPopup) openAddressPopup.addEventListener('click', () => showPopup('addressPopup'));
+    if (closeAddressPopup) closeAddressPopup.addEventListener('click', () => hidePopup('addressPopup'));
+    if (openAddAddressPopup) {
+      openAddAddressPopup.addEventListener('click', () => {
+        hidePopup('addressPopup');
+        setTimeout(() => showPopup('newAddressPopup'), 180);
+      });
+    }
+    if (closeNewAddress) closeNewAddress.addEventListener('click', () => hidePopup('newAddressPopup'));
 
     // manual time slot trigger (if user clicks Select Time Slot)
-    document.getElementById('openTimeSlotManually').addEventListener('click', () => showPopup('timeSlotPopup'));
+    const openTimeSlotManually = document.getElementById('openTimeSlotManually');
+    if (openTimeSlotManually) openTimeSlotManually.addEventListener('click', () => showPopup('timeSlotPopup'));
 
     /* ---------- chained flow ---------- */
     // 1) Alteration proceed -> open Address
-    document.getElementById('altProceed').addEventListener('click', () => {
-      hidePopup('alterationPopup');
-      setTimeout(() => showPopup('addressPopup'), 200);
-    });
+    const altProceed = document.getElementById('altProceed');
+    if (altProceed) {
+      altProceed.addEventListener('click', () => {
+        hidePopup('alterationPopup');
+        setTimeout(() => showPopup('addressPopup'), 200);
+      });
+    }
 
     // 2) Address proceed -> open TimeSlot
-    document.getElementById('addressProceed').addEventListener('click', () => {
-      hidePopup('addressPopup');
-      setTimeout(() => {
-        // prefill pickup date to today
-        const d = new Date();
-        const iso = d.toISOString().slice(0, 10);
-        document.getElementById('pickupDate').value = iso;
-        showPopup('timeSlotPopup');
-      }, 200);
-    });
+    const addressProceed = document.getElementById('addressProceed');
+    if (addressProceed) {
+      addressProceed.addEventListener('click', () => {
+        hidePopup('addressPopup');
+        setTimeout(() => {
+          // prefill pickup date to today
+          const d = new Date();
+          const iso = d.toISOString().slice(0, 10);
+          const pickupDate = document.getElementById('pickupDate');
+          if (pickupDate) pickupDate.value = iso;
+          showPopup('timeSlotPopup');
+        }, 200);
+      });
+    }
 
     // 3) TimeSlot proceed -> Payment
-    document.getElementById('timeProceed').addEventListener('click', () => {
-      // validate at least one timeslot is selected
-      const selected = document.querySelector('.time-slot.active');
-      if (!selected) {
-        alert('Please select a time slot.');
-        return;
-      }
-      hidePopup('timeSlotPopup');
-      setTimeout(() => showPopup('paymentPopup'), 200);
-    });
+    const timeProceed = document.getElementById('timeProceed');
+    if (timeProceed) {
+      timeProceed.addEventListener('click', () => {
+        // validate at least one timeslot is selected
+        const selected = document.querySelector('.time-slot.active');
+        if (!selected) {
+          alert('Please select a time slot.');
+          return;
+        }
+        hidePopup('timeSlotPopup');
+        setTimeout(() => showPopup('paymentPopup'), 200);
+      });
+    }
 
     // time back -> go to address
-    document.getElementById('timeBack').addEventListener('click', () => {
-      hidePopup('timeSlotPopup');
-      setTimeout(() => showPopup('addressPopup'), 200);
-    });
+    const timeBack = document.getElementById('timeBack');
+    if (timeBack) {
+      timeBack.addEventListener('click', () => {
+        hidePopup('timeSlotPopup');
+        setTimeout(() => showPopup('addressPopup'), 200);
+      });
+    }
 
     // payment back -> go to time slot
-    document.getElementById('paymentBack').addEventListener('click', () => {
-      hidePopup('paymentPopup');
-      setTimeout(() => showPopup('timeSlotPopup'), 200);
-    });
+    const paymentBack = document.getElementById('paymentBack');
+    if (paymentBack) {
+      paymentBack.addEventListener('click', () => {
+        hidePopup('paymentPopup');
+        setTimeout(() => showPopup('timeSlotPopup'), 200);
+      });
+    }
 
-    // place order -> show confirmation
-    document.getElementById('placeOrderBtn').addEventListener('click', () => {
-      // Minimal validation example: if UPI selected require screenshot
-      const upiActive = document.getElementById('pm-upi').classList.contains('active');
-      if (upiActive) {
-        const file = document.getElementById('upiScreenshot').files[0];
-        if (!file) {
-          if (!confirm('No UPI screenshot uploaded. Continue anyway?')) return;
-        }
-      }
-      hidePopup('paymentPopup');
-      setTimeout(() => showPopup('orderConfirmPopup'), 200);
-    });
+    // Note: placeOrderBtn click handler is at the bottom of the page with AJAX functionality
 
-    document.getElementById('closePayment').addEventListener('click', () => hidePopup('paymentPopup'));
-    document.getElementById('closeTimeSlot').addEventListener('click', () => hidePopup('timeSlotPopup'));
-    document.getElementById('closeOrderConfirm').addEventListener('click', () => hidePopup('orderConfirmPopup'));
-    document.getElementById('closeConfirm').addEventListener('click', () => hidePopup('orderConfirmPopup'));
-    document.getElementById('goToOrders').addEventListener('click', () => {
-      /* redirect to orders page if available */
-      window.location.href = './index.php';
-    });
+    const closePayment = document.getElementById('closePayment');
+    const closeTimeSlot = document.getElementById('closeTimeSlot');
+    const closeOrderConfirm = document.getElementById('closeOrderConfirm');
+    const closeConfirm = document.getElementById('closeConfirm');
+    const goToOrders = document.getElementById('goToOrders');
+    
+    if (closePayment) closePayment.addEventListener('click', () => hidePopup('paymentPopup'));
+    if (closeTimeSlot) closeTimeSlot.addEventListener('click', () => hidePopup('timeSlotPopup'));
+    if (closeOrderConfirm) closeOrderConfirm.addEventListener('click', () => hidePopup('orderConfirmPopup'));
+    if (closeConfirm) closeConfirm.addEventListener('click', () => hidePopup('orderConfirmPopup'));
+    if (goToOrders) {
+      goToOrders.addEventListener('click', () => {
+        /* redirect to orders page if available */
+        window.location.href = "{{ route('home') }}";
+      });
+    }
 
     /* ---------- time slot selection logic ---------- */
-    // day buttons
+    // day buttons - now dynamic from database
     document.querySelectorAll('.day-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        // change date input to match selection (simple demo)
-        const day = btn.dataset.day;
+        // change date input to match selection
+        const dateValue = btn.dataset.date;
         const dateInput = document.getElementById('pickupDate');
-        const now = new Date();
-        let target = new Date();
-        if (day === 'tomorrow') target.setDate(now.getDate() + 1);
-        if (day === '14july') {
-          target = new Date(now.getFullYear(), 6, 14);
-        } // July = 6
-        if (day === '15july') {
-          target = new Date(now.getFullYear(), 6, 15);
+        if (dateInput && dateValue) {
+          dateInput.value = dateValue;
+          // Update expected delivery when date changes
+          if (fastToggle && expectedEl) {
+            const pickupDate = new Date(dateValue);
+            const deliveryDays = fastToggle.checked ? 2 : 7;
+            const expectedDelivery = new Date(pickupDate);
+            expectedDelivery.setDate(pickupDate.getDate() + deliveryDays);
+            const opts = {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            };
+            expectedEl.textContent = expectedDelivery.toLocaleDateString(undefined, opts);
+          }
         }
-        dateInput.value = target.toISOString().slice(0, 10);
       });
     });
 
@@ -1134,9 +892,11 @@
     // fast delivery toggle updates expected date text
     const expectedEl = document.getElementById('expectedDate');
     const fastToggle = document.getElementById('fastDeliveryToggle');
+    const pickupDateInput = document.getElementById('pickupDate');
 
     function computeExpected(fast = false) {
-      const base = new Date();
+      const pickupDate = pickupDateInput ? new Date(pickupDateInput.value) : new Date();
+      const base = new Date(pickupDate);
       base.setDate(base.getDate() + (fast ? 2 : 7));
       const opts = {
         weekday: 'long',
@@ -1146,34 +906,59 @@
       };
       return base.toLocaleDateString(undefined, opts);
     }
-    expectedEl.textContent = computeExpected(false);
-    fastToggle.addEventListener('change', () => {
-      expectedEl.textContent = computeExpected(fastToggle.checked);
-    });
+    
+    if (expectedEl && fastToggle) {
+      expectedEl.textContent = computeExpected(false);
+      fastToggle.addEventListener('change', () => {
+        expectedEl.textContent = computeExpected(fastToggle.checked);
+      });
+    }
+
+    // Update expected date when pickup date changes manually
+    if (pickupDateInput && expectedEl && fastToggle) {
+      pickupDateInput.addEventListener('change', () => {
+        expectedEl.textContent = computeExpected(fastToggle.checked);
+      });
+    }
 
     /* ---------- payment method toggle ---------- */
-    document.getElementById('pm-upi').addEventListener('click', () => {
-      document.getElementById('pm-upi').classList.add('active');
-      document.getElementById('pm-card').classList.remove('active');
-      document.getElementById('upiBox').style.display = 'block';
-      document.getElementById('cardBox').style.display = 'none';
-    });
-    document.getElementById('pm-card').addEventListener('click', () => {
-      document.getElementById('pm-card').classList.add('active');
-      document.getElementById('pm-upi').classList.remove('active');
-      document.getElementById('upiBox').style.display = 'none';
-      document.getElementById('cardBox').style.display = 'block';
-    });
+    const pmUPI = document.getElementById('pm-upi');
+    const pmCard = document.getElementById('pm-card');
+    const upiBox = document.getElementById('upiBox');
+    const cardBox = document.getElementById('cardBox');
+    
+    if (pmUPI && pmCard && upiBox && cardBox) {
+      pmUPI.addEventListener('click', () => {
+        pmUPI.classList.add('active');
+        pmCard.classList.remove('active');
+        upiBox.style.display = 'block';
+        cardBox.style.display = 'none';
+      });
+      
+      pmCard.addEventListener('click', () => {
+        pmCard.classList.add('active');
+        pmUPI.classList.remove('active');
+        upiBox.style.display = 'none';
+        cardBox.style.display = 'block';
+      });
+    }
 
     /* ---------- small quantity controls for alteration ---------- */
-    document.getElementById('increaseAlt').addEventListener('click', () => {
-      const q = document.getElementById('quantityAlt');
-      q.value = Math.max(1, parseInt(q.value || '1') + 1);
-    });
-    document.getElementById('decreaseAlt').addEventListener('click', () => {
-      const q = document.getElementById('quantityAlt');
-      q.value = Math.max(1, parseInt(q.value || '1') - 1);
-    });
+    const increaseAlt = document.getElementById('increaseAlt');
+    const decreaseAlt = document.getElementById('decreaseAlt');
+    const quantityAlt = document.getElementById('quantityAlt');
+    
+    if (increaseAlt && quantityAlt) {
+      increaseAlt.addEventListener('click', () => {
+        quantityAlt.value = Math.max(1, parseInt(quantityAlt.value || '1') + 1);
+      });
+    }
+    
+    if (decreaseAlt && quantityAlt) {
+      decreaseAlt.addEventListener('click', () => {
+        quantityAlt.value = Math.max(1, parseInt(quantityAlt.value || '1') - 1);
+      });
+    }
 
     /* ---------- Save-as buttons in new address popup ---------- */
     document.querySelectorAll('.save-type .seg-btn').forEach(btn => {
@@ -1184,10 +969,13 @@
     });
 
     // Save new address -> close and go back to address popup
-    document.getElementById('saveNewAddressBtn').addEventListener('click', () => {
-      hidePopup('newAddressPopup');
-      setTimeout(() => showPopup('addressPopup'), 200);
-    });
+    const saveNewAddressBtn = document.getElementById('saveNewAddressBtn');
+    if (saveNewAddressBtn) {
+      saveNewAddressBtn.addEventListener('click', () => {
+        hidePopup('newAddressPopup');
+        setTimeout(() => showPopup('addressPopup'), 200);
+      });
+    }
 
     /* ---------- Google Maps init and Use Current Location ---------- */
     let map;
@@ -1209,17 +997,24 @@
         map
       });
     }
-    document.getElementById('useCurrentLocation').addEventListener('click', () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(pos => {
-          initMap(pos.coords.latitude, pos.coords.longitude);
-        }, () => alert('Unable to access location.'));
-      } else alert('Geolocation not supported.');
-    });
+    
+    const useCurrentLocation = document.getElementById('useCurrentLocation');
+    if (useCurrentLocation) {
+      useCurrentLocation.addEventListener('click', () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(pos => {
+            initMap(pos.coords.latitude, pos.coords.longitude);
+          }, () => alert('Unable to access location.'));
+        } else alert('Geolocation not supported.');
+      });
+    }
+    
     // init map on demand when opening address popup
-    document.getElementById('openAddressPopup').addEventListener('click', () => {
-      setTimeout(() => initMap(), 300);
-    });
+    if (openAddressPopup) {
+      openAddressPopup.addEventListener('click', () => {
+        setTimeout(() => initMap(), 300);
+      });
+    }
 
     // If you want the time slot popup to open after address when saving a new address, you can wire that here.
   </script>
@@ -1228,55 +1023,91 @@
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
 </body>
 <script>
-  // ===== OPEN PAYMENT POPUP =====
-  const paymentPopup = document.getElementById("paymentPopup");
-  const orderConfirmPopup = document.getElementById("orderConfirmPopup");
+  // ===== PLACE ORDER BUTTON WITH AJAX =====
+  document.getElementById("placeOrderBtn").addEventListener("click", async () => {
+    try {
+      // Get selected address from sessionStorage
+      const addressId = sessionStorage.getItem('selectedAddressId');
+      if (!addressId) {
+        alert('Please select a delivery address');
+        return;
+      }
 
-  // OPEN popup (Call this when user clicks "Continue to Payment")
-  function openPaymentPopup() {
-    paymentPopup.style.display = "flex";
-    paymentPopup.setAttribute("aria-hidden", "false");
-  }
+      // Get time slot data from sessionStorage
+      const timeSlotData = JSON.parse(sessionStorage.getItem('selectedTimeSlot') || '{}');
+      if (!timeSlotData.pickup_date || !timeSlotData.pickup_time) {
+        alert('Please select a time slot');
+        return;
+      }
 
-  // CLOSE payment popup
-  document.getElementById("closePayment").addEventListener("click", () => {
-    paymentPopup.style.display = "none";
-  });
+      // Get payment method
+      const paymentMethod = document.querySelector('.pm.active')?.getAttribute('data-method');
+      if (!paymentMethod) {
+        alert('Please select a payment method');
+        return;
+      }
 
-  // BACK button inside popup
-  document.getElementById("paymentBack").addEventListener("click", () => {
-    paymentPopup.style.display = "none";
-  });
+      // Prepare form data
+      const formData = new FormData();
+      formData.append('address_id', addressId);
+      formData.append('pickup_date', timeSlotData.pickup_date);
+      formData.append('pickup_time', timeSlotData.pickup_time);
+      formData.append('time_slot', timeSlotData.time_slot);
+      formData.append('expected_delivery_date', timeSlotData.expected_delivery_date);
+      formData.append('fast_delivery', timeSlotData.fast_delivery ? '1' : '0');
+      formData.append('payment_method', paymentMethod);
 
-  // ====== PAYMENT METHOD SWITCH ======
-  const pmUPI = document.getElementById("pm-upi");
-  const pmCard = document.getElementById("pm-card");
-  const upiBox = document.getElementById("upiBox");
-  const cardBox = document.getElementById("cardBox");
+      // Add payment screenshot if UPI
+      if (paymentMethod === 'upi') {
+        const screenshot = document.getElementById('upiScreenshot')?.files[0];
+        if (screenshot) {
+          formData.append('payment_screenshot', screenshot);
+        }
+      }
 
-  // UPI click
-  pmUPI.addEventListener("click", () => {
-    pmUPI.classList.add("active");
-    pmCard.classList.remove("active");
-    upiBox.style.display = "block";
-    cardBox.style.display = "none";
-  });
+      // Show loading state
+      const placeOrderBtn = document.getElementById('placeOrderBtn');
+      const originalText = placeOrderBtn.textContent;
+      placeOrderBtn.textContent = 'Processing...';
+      placeOrderBtn.disabled = true;
 
-  // CARD click
-  pmCard.addEventListener("click", () => {
-    pmCard.classList.add("active");
-    pmUPI.classList.remove("active");
-    upiBox.style.display = "none";
-    cardBox.style.display = "block";
-  });
+      // Send order request
+      const response = await fetch('{{ route("order.place") }}', {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+        },
+        body: formData
+      });
 
-  // ===== PLACE ORDER BUTTON =====
-  document.getElementById("placeOrderBtn").addEventListener("click", () => {
-    paymentPopup.style.display = "none"; // close payment popup
-    orderConfirmPopup.style.display = "flex"; // open confirm popup
+      const data = await response.json();
+      console.log('Order response:', data);
+
+      if (data.success) {
+        // Clear sessionStorage
+        sessionStorage.removeItem('selectedTimeSlot');
+        
+        // Close payment popup and show confirmation
+        const paymentPopup = document.getElementById('paymentPopup');
+        const orderConfirmPopup = document.getElementById('orderConfirmPopup');
+        paymentPopup.style.display = "none";
+        orderConfirmPopup.style.display = "flex";
+      } else {
+        alert(data.message || 'Failed to place order. Please try again.');
+        placeOrderBtn.textContent = originalText;
+        placeOrderBtn.disabled = false;
+      }
+    } catch (error) {
+      console.error('Order placement error:', error);
+      alert('An error occurred while placing your order. Please try again.');
+      const placeOrderBtn = document.getElementById('placeOrderBtn');
+      placeOrderBtn.textContent = 'Place Order';
+      placeOrderBtn.disabled = false;
+    }
   });
 
   // ===== CLOSE ORDER CONFIRM POPUP =====
+  const orderConfirmPopup = document.getElementById('orderConfirmPopup');
   document.getElementById("closeOrderConfirm").addEventListener("click", () => {
     orderConfirmPopup.style.display = "none";
   });
@@ -1287,8 +1118,8 @@
 
   // GO TO ORDERS PAGE
   document.getElementById("goToOrders").addEventListener("click", () => {
-    window.location.href = "orders.php"; // change your URL
+    window.location.href = "{{ route('order.history') }}";
   });
 </script>
 
-</html>
+</html> 

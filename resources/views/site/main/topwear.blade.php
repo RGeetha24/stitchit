@@ -179,94 +179,74 @@
             @endif
         </div>
 
-        <!-- 3️⃣ Right Column: Cart -->
-        <div class="cart-box">
-            <h3>Cart</h3>
+        @include('site.main.partials.cart-sidebar')
 
-            <div class="cart-item">
-                <div>
-                    <p>Blouse Sleeve Length Alteration</p>
-                    <a href="#">Edit</a>
-                </div>
-                <div class="qty-price">
-                    <div class="quantity-box">
-                        <button>-</button>
-                        <input type="text" value="1">
-                        <button>+</button>
-                    </div>
-                    <span>₹100</span>
-                </div>
-            </div>
-
-            <div class="cart-item">
-                <div>
-                    <p>Blouse Length Alteration</p>
-                    <a href="#">Edit</a>
-                </div>
-                <div class="qty-price">
-                    <div class="quantity-box">
-                        <button>-</button>
-                        <input type="text" value="1">
-                        <button>+</button>
-                    </div>
-                    <span>₹200</span>
-                </div>
-            </div>
-
-            <div class="cart-item">
-                <div>
-                    <p>Blouse Neckline Alteration</p>
-                    <a href="#">Edit</a>
-                </div>
-                <div class="qty-price">
-                    <div class="quantity-box">
-                        <button>-</button>
-                        <input type="text" value="1">
-                        <button>+</button>
-                    </div>
-                    <span>₹200</span>
-                </div>
-            </div>
-
-            <div class="summary">
-                <div class="highlight">🎉 Congratulations! ₹100 saved so far</div>
-                <div class="total">
-                    <p>Total</p>
-                    <p>₹450 <span>₹550</span></p>
-                </div>
-                <button class="view-cart-btn" onclick="window.location.href='{{route('order.cart')}}'">View Cart</button>
-                <button class="view-cart-btn" onclick="window.location.href='{{route('checkout')}}'">View Checkout</button>
-            </div>
-            <div class="offer">
-                <div class="offer-left">
-                    <img src='{{url("site/assets/image/Container (1).png")}}' alt="Offer">
-                </div>
-                <div class="offer-right">
-                    <p>Up to ₹150 Cashback</p>
-                    <a href="#">View More Offers</a>
-                </div>
-            </div>
-
-
-            <!-- ✅ Stitch-It Promise Section -->
-            <div class="promise-box">
-                <h3>Stitch-It Promise</h3>
-                <div class="promise-content">
-                    <div class="promise-text">
-                        <ul>
-                            <li>✔ Verified Tailors</li>
-                            <li>✔ Hassle Free Booking</li>
-                            <li>✔ Transparent Pricing</li>
-                            <li>✔ Doorstep Service</li>
-                        </ul>
-                    </div>
-                    <div class="promise-img">
-                        <img src="./assets/image/Img (3).png")}}' alt="Stitch-It Promise Badge">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set up CSRF token for AJAX requests
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+    
+    // Add button click handler
+    document.querySelectorAll('.add-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const serviceId = this.getAttribute('data-service-id');
+            addToCart(serviceId);
+        });
+    });
+    
+    function addToCart(serviceId) {
+        fetch('{{ route("cart.add") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                service_id: serviceId,
+                quantity: 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                refreshCartDisplay();
+                showNotification('Item added to cart!');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Failed to add item', 'error');
+        });
+    }
+    
+    function refreshCartDisplay() {
+        // Reload the page to refresh cart sidebar
+        location.reload();
+    }
+    
+    function showNotification(message, type = 'success') {
+        // Simple notification (you can customize this)
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: ${type === 'success' ? '#00796b' : '#f44336'};
+            color: white;
+            border-radius: 8px;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 2000);
+    }
+});
+</script>
 @endsection

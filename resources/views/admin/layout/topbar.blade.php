@@ -13,7 +13,7 @@
     <div class="user-info" id="userInfo">
         <img src='{{url("admin/assets/images/profile.png")}}' class="avatar">
         <div class="user-text">
-            <h4>{{Auth::user()->name}}</h4>
+            <h4>{{ Auth::guard('admin')->user()->name }}</h4>
             <span>Studio Manager</span>
         </div>
 

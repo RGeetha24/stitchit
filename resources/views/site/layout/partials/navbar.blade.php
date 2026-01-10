@@ -35,11 +35,14 @@
 
                 <a href="{{route('notification')}}" class="icon-link notify">
                     <i class="ri-notification-3-line"></i>
-                    <span class="badge">3</span>
+                    <!-- <span class="badge">3</span> -->
                 </a>
 
-                <a href="{{route('order.cart')}}" class="icon-link">
+                <a href="{{route('order.cart')}}" class="icon-link notify">
                     <img src='{{url("site/assets/image/icon/cart.png")}}' class="cart-img" alt="Cart">
+                    @if($cartCount > 0)
+                        <span class="badge" >{{ $cartCount }}</span>
+                    @endif
                 </a>
 
                 <div class="profile-box">

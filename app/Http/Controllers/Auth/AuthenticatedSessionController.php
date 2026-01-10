@@ -24,13 +24,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->authenticate('web');
 
         $request->session()->regenerate();
 
         // Ensure the authenticated user has the "user" role (not admin or others)
-        if (auth()->user()->role !== 'user') {
-            Auth::logout();
+        if (Auth::guard('web')->user()->role !== 'user') {
+            Auth::guard('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
@@ -38,8 +38,6 @@ class AuthenticatedSessionController extends Controller
                 'email' => 'You are not authorized to access this area.',
             ])->onlyInput('email');
         }
-
-        // return redirect()->intended(route('dashboard', absolute: false)); // old behaviour
 
         // Redirect to home page ('/') after successful login
         return redirect()->intended(route('home'));

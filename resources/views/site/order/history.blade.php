@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Order History | Stitch It</title>
+    <title>Order History</title>
     <link rel="icon" type="image/x-icon" href='{{url("site/assets/image/fav-removebg-preview.png")}}'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -173,6 +173,22 @@
             color: #f0a500;
         }
 
+        .status.pending {
+            color: #f0a500;
+        }
+
+        .status.confirmed {
+            color: #0288d1;
+        }
+
+        .status.readyfordelivery {
+            color: #7b1fa2;
+        }
+
+        .status.cancelled {
+            color: #d32f2f;
+        }
+
         .order-right .date {
             font-size: 13px;
             color: #999;
@@ -231,78 +247,99 @@
             </a>
             <div class="header-content">
                 <h2>Order History</h2>
-                <div class="location"><i class="fa-solid fa-location-dot"></i> Clarion Park Society, Aundh, Pune</div>
+                <!-- <div class="location"><i class="fa-solid fa-location-dot"></i> Clarion Park Society, Aundh, Pune</div> -->
             </div>
         </div>
 
         <div class="filter-tabs">
-            <button class="active">All</button>
-            <button>Delivered</button>
-            <button>In Progress</button>
-            <button>Rework</button>
+            <button class="active" data-filter="all">All</button>
+            <button data-filter="Delivered">Delivered</button>
+            <button data-filter="Pending">Pending</button>
+            <button data-filter="Confirmed">Confirmed</button>
+            <button data-filter="In Progress">In Progress</button>
         </div>
 
-        <!-- Order 1 -->
-        <div class="order-card">
+        @forelse($orders as $order)
+        <!-- Order Card -->
+        <div class="order-card" data-status="{{ $order->status }}">
             <div class="order-left">
-                <a href="{{route('order.details', ['id' => 12346])}}">
-                    <img src='{{url("site/assets/image/product/Frame 33 (1).png")}}' alt="Shirt">
+                <a href="{{ route('order.details', ['id' => $order->id]) }}">
+                    @php
+                        $firstItem = $order->items->first();
+                        $imagePath = $firstItem && $firstItem->service && $firstItem->service->icon 
+                            ? url('uploads/services/' . $firstItem->service->icon)
+                            : url("site/assets/image/product/Frame 33 (1).png");
+                    @endphp
+                    <img src='{{ $imagePath }}' alt="Order">
                 </a>
                 <div class="order-details">
-                    <h4><b>Garment : Shirt</b></h4>
-                    <p>Order Number: #12346</p>
-                    <p><b>Alteration Type: Length Shortening</b></p>
-                    <div class="price">₹217</div>
+                    <h4><b>Order #{{ $order->order_number }}</b></h4>
+                    <p>{{ $order->items->count() }} {{ Str::plural('item', $order->items->count()) }}</p>
+                    @if($order->items->first())
+                    <p><b>{{ $order->items->first()->item_name }}</b>
+                        @if($order->items->count() > 1)
+                            + {{ $order->items->count() - 1 }} more
+                        @endif
+                    </p>
+                    @endif
+                    <div class="price">₹{{ number_format($order->total, 2) }}</div>
                 </div>
             </div>
             <div class="order-right">
-                <div class="status delivered">Delivered</div>
-                <div class="date">12 Sep 2025</div>
-                     <a href="{{route('order.feedback', ['id' => 12346])}}">
-                <button class="action-btn">Send for Rework</button>
-                     </a>
-            </div>
-        </div>
-
-        <!-- Order 2 -->
-        <div class="order-card">
-            <div class="order-left">
-                <a href="{{route('order.details', ['id' => 12348])}}">
-                    <img src='{{url("site/assets/image/product/Frame 33.png")}}' alt="Shirt">
-                </a>
-                <div class="order-details">
-                    <h4><b>Garment : Shirt</b></h4>
-                    <p>Order Number: #12348</p>
-                    <p><b>Alteration Type: Length Shortening</b></p>
-                    <div class="price">₹217</div>
+                <div class="status {{ strtolower(str_replace(' ', '', $order->status)) }}">
+                    {{ $order->status }}
                 </div>
+                <div class="date">{{ $order->created_at->format('d M Y') }}</div>
+                
+                @if($order->status === 'Delivered')
+                    <a href="{{ route('order.feedback', ['id' => $order->id]) }}">
+                        <button class="action-btn">Rate Order</button>
+                    </a>
+                @elseif(in_array($order->status, ['Pending', 'Confirmed', 'In Progress', 'Ready for Delivery']))
+                    <a href="{{ route('order.track', ['id' => $order->id]) }}">
+                        <button class="action-btn green">Track Order</button>
+                    </a>
+                @endif
             </div>
-            <div class="order-right">
-                <div class="status inprogress">In Progress</div>
-                <div class="date">1 Sep 2025</div>
-                <a href="{{route('order.track', ['id' => 12348])}}">
-                    <button class="action-btn green">Track Order</button>
-                </a>
+        </div>
+        @empty
+        <div style="text-align: center; padding: 60px 20px; color: #999;">
+            <i class="fa-solid fa-box-open" style="font-size: 48px; margin-bottom: 15px; color: #ddd;"></i>
+            <h3 style="font-size: 18px; color: #666; margin-bottom: 8px;">No Orders Yet</h3>
+            <p style="font-size: 14px;">Start shopping to see your orders here!</p>
+            <a href="{{ route('home') }}" style="display: inline-block; margin-top: 20px; padding: 10px 24px; background: #004d46; color: white; text-decoration: none; border-radius: 25px;">Browse Services</a>
+        </div>
+        @endforelse
 
-            </div>
+        @if($orders->hasPages())
+        <div style="margin-top: 30px; text-align: center;">
+            {{ $orders->links() }}
         </div>
-        <div class="order-card">
-            <div class="order-left">
-                <img src='{{url("site/assets/image/product/image 8.png")}}' alt="Shirt">
-                <div class="order-details">
-                    <h4><b>Garment : Shirt</b></h4>
-                    <p>Order Number: #12348</p>
-                    <p><b>Alteration Type: Length Shortening</b></p>
-                    <div class="price">₹217</div>
-                </div>
-            </div>
-            <div class="order-right">
-                <div class="status inprogress">In Progress</div>
-                <div class="date">1 Sep 2025</div>
-                <button class="action-btn green">Track Order</button>
-            </div>
-        </div>
+        @endif
     </div>
+
+    <script>
+        // Filter functionality
+        document.querySelectorAll('.filter-tabs button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active state
+                document.querySelectorAll('.filter-tabs button').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                const cards = document.querySelectorAll('.order-card');
+                
+                cards.forEach(card => {
+                    const status = card.getAttribute('data-status');
+                    if (filter === 'all' || status === filter) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

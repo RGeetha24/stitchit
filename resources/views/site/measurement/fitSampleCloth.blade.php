@@ -434,39 +434,41 @@
                         <button class="close-popup" id="closePopup">&times;</button>
                         <h2>Fit By Sample Clothing</h2>
 
-                        <div class="garment-details-grid">
-                            <!-- Original Garment Details -->
-                            <div class="garment-box">
-                                <h3 class="section-title original">Original Garment Details</h3>
+                        <form id="sampleClothingForm" enctype="multipart/form-data">
+                            @csrf
+                            <div class="garment-details-grid">
+                                <!-- Original Garment Details -->
+                                <div class="garment-box">
+                                    <h3 class="section-title original">Original Garment Details</h3>
 
-                                <label>Add Special Instructions</label>
-                                <textarea placeholder="Type or Record instructions here..."></textarea>
+                                    <label>Add Special Instructions</label>
+                                    <textarea name="special_instructions" placeholder="Type/Record your instructions here..." style="width:100%; padding:10px; border:1px solid #e7e7e7; border-radius:8px; min-height:80px; margin-bottom:15px;"></textarea>
 
-                                <label>Upload Garment Image</label>
-                                <input type="file" class="file-input">
+                                    <label>Upload Garment Image</label>
+                                    <input type="file" name="images[]" class="file-input" multiple accept="image/*" style="display:block; margin-top:5px; margin-bottom:15px;">
 
-                                <label>Enter the Quantity/Number of Garments</label>
-                                <div class="quantity-box">
-                                    <button class="qty-btn">-</button>
-                                    <input type="text" value="1" class="qty-input">
-                                    <button class="qty-btn">+</button>
+                                    <label>Enter the Quantity/Number of Garments</label>
+                                    <div class="qty-box">
+                                        <button type="button" class="qty-btn" id="decreaseQty">-</button>
+                                        <input type="number" name="quantity" value="1" min="1" style="width:60px; text-align:center; border:1px solid #ddd; border-radius:6px; padding:5px;">
+                                        <button type="button" class="qty-btn" id="increaseQty">+</button>
+                                    </div>
+                                </div>
+
+                                <!-- Sample Garment Details -->
+                                <div class="garment-box">
+                                    <h3 class="section-title sample">Sample Garment Details</h3>
+
+                                    <label>Add Special Instructions (regarding sample garment)</label>
+                                    <textarea name="sample_instructions" placeholder="Type/Record your instructions for sample garment..." style="width:100%; padding:10px; border:1px solid #e7e7e7; border-radius:8px; min-height:80px; margin-bottom:15px;"></textarea>
+
+                                    <label>Upload Sample Garment Image</label>
+                                    <input type="file" name="sample_images[]" class="file-input" multiple accept="image/*" style="display:block; margin-top:5px;">
                                 </div>
                             </div>
 
-                            <!-- Sample Garment Details -->
-                            <div class="garment-box">
-                                <h3 class="section-title sample">Sample Garment Details</h3>
-
-                                <label>Add Special Instructions (regarding sample garment)</label>
-                                <textarea placeholder="Type or Record instructions here..."></textarea>
-
-                                <label>Upload Sample Garment Image</label>
-                                <input type="file" class="file-input">
-
-                            </div>
-                        </div>
-
-                        <button class="primary-btn" id="altProceed">Proceed to Next Step</button>
+                            <button type="submit" class="primary-btn" id="submitSampleClothing">Proceed to Next Step</button>
+                        </form>
                     </div>
                 </div>
 
@@ -476,81 +478,7 @@
                         Address
                     </div>
                 </div>
-
-                <div class="popup-overlay" id="addressPopup" aria-hidden="true">
-                    <div class="popup address-popup">
-                        <button class="close-popup" id="closeAddressPopup">&times;</button>
-                        <h2>Select Address</h2>
-
-                        <input type="text" id="searchAddress" placeholder="Search your location/society/apartment" style="width:100%; padding:10px;border:1px solid #e7e7e7;border-radius:8px;">
-
-                        <div style="margin-top:8px;">
-                            <button id="useCurrentLocation" class="secondary-link" style="display:inline-flex;align-items:center;gap:8px;">📍 Use current location</button>
-                        </div>
-
-                        <div id="map" class="map-container" style="margin-top:12px;height:160px;border-radius:8px; overflow:hidden;"></div>
-
-                        <div class="saved-addresses" style="margin-top:12px;">
-                            <h3>Saved Addresses</h3>
-                            <div class="address-card" style="background:#fafafa;border:1px solid #eee;padding:10px;border-radius:8px;margin-bottom:10px;">
-                                <p><b>Home:</b> A5 Building, Samrudhi Society</p>
-                                <small>2nd Main Road, Near DK University, Pune</small>
-                            </div>
-                            <div class="address-card" style="background:#fafafa;border:1px solid #eee;padding:10px;border-radius:8px;margin-bottom:10px;">
-                                <p><b>PG:</b> Zoio Belair, SG Palya</p>
-                                <small>1st Main Road, Venkateshwara Layout, Bengaluru</small>
-                            </div>
-                        </div>
-
-                        <div style="margin-top:10px; display:flex; gap:10px;">
-                            <div id="openAddAddressPopup" class="secondary-link" style="flex:1; text-align:center; cursor:pointer;">➕ Add New Address</div>
-                            <button class="primary-btn" id="addressProceed" style="flex:1;">Proceed to Next Step</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="popup-overlay" id="newAddressPopup" aria-hidden="true">
-                    <div class="popup">
-                        <button class="close-popup" id="closeNewAddress">&times;</button>
-                        <h2>New Address</h2>
-
-                        <form class="address-form" onsubmit="event.preventDefault();">
-                            <label>Full Name</label>
-                            <input type="text" placeholder="Enter full name" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e7e7e7;">
-
-                            <label style="display:block;margin-top:8px;">Contact</label>
-                            <div class="contact-group" style="display:flex; gap:8px;">
-                                <input type="text" value="+91" readonly style="width:70px;padding:10px;border-radius:8px;border:1px solid #e7e7e7;">
-                                <input type="text" placeholder="xxxx - xxxx" style="flex:1;padding:10px;border-radius:8px;border:1px solid #e7e7e7;">
-                            </div>
-
-                            <label style="display:block;margin-top:8px;">Email</label>
-                            <input type="email" placeholder="Enter email address" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e7e7e7;">
-
-                            <label style="display:block;margin-top:8px;">House no/Building/Street</label>
-                            <input type="text" placeholder="Enter complete address" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e7e7e7;">
-
-                            <label style="display:block;margin-top:8px;">Locality</label>
-                            <input type="text" placeholder="Enter locality" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e7e7e7;">
-
-                            <div class="city-pincode" style="display:flex; gap:8px; margin-top:8px;">
-                                <input type="text" placeholder="City" style="flex:1; padding:10px;border-radius:8px;border:1px solid #e7e7e7;">
-                                <input type="text" placeholder="Pincode" style="width:120px; padding:10px;border-radius:8px;border:1px solid #e7e7e7;">
-                            </div>
-
-                            <p class="save-label" style="margin-top:8px;">Save as</p>
-                            <div class="save-type" style="display:flex; gap:10px;">
-                                <button type="button" class="seg-btn" data-value="Home">Home</button>
-                                <button type="button" class="seg-btn" data-value="Office">Office</button>
-                                <button type="button" class="seg-btn" data-value="Other">Other</button>
-                            </div>
-
-                            <div style="margin-top:12px;">
-                                <button class="primary-btn" id="saveNewAddressBtn">Save New Address</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                @include('site.measurement.partials.address')
 
                 <!-- Time Slot trigger section in left column -->
                 <div class="section" style="margin-top:14px;">
@@ -559,16 +487,12 @@
                     Time Slot</div>
                 </div>
 
-                <!-- <div class="section" style="margin-top:8px;">
-          <button id="openTimeSlotManually" class="secondary-link">Select Time Slot</button>
-        </div> -->
-
                 <!-- Payment header (left) -->
                 <div class="section" style="margin-top:16px;">
                     <div class="section-header">
-                           <img src='{{url("site/assets/image/icon/majesticons_money.png")}}' alt="" style="width:22px; height:22px; margin:0 6px;">
-                  
-                    Payment Method</div>
+                    <img src='{{url("site/assets/image/icon/majesticons_money.png")}}' alt="" style="width:22px; height:22px; margin:0 6px;">
+                    Payment Method
+                    </div>
                 </div>
 
                 <h3 style="margin-top:12px;"><b>Cancellation policy</b></h3>
@@ -679,103 +603,10 @@
     </div>
 
     <!-- ================== Time Slot Popup ================== -->
-    <div class="popup-overlay" id="timeSlotPopup" aria-hidden="true">
-        <div class="popup" role="dialog" aria-modal="true" aria-labelledby="tsTitle">
-            <button class="close-popup" id="closeTimeSlot">&times;</button>
-            <h2 id="tsTitle">Select Time Slot</h2>
-
-            <div class="form-group">
-                <label style="font-weight:600;">Pick Up Date</label>
-                <input class="date-input" type="date" id="pickupDate" />
-            </div>
-
-            <div class="form-group">
-                <label style="font-weight:600;">Pick Up Time</label>
-                <div class="days-btns" id="dayButtons">
-                    <button type="button" class="seg-btn day-btn active" data-day="today">Today</button>
-                    <button type="button" class="seg-btn day-btn" data-day="tomorrow">Tomorrow</button>
-                    <button type="button" class="seg-btn day-btn" data-day="14july">14th July</button>
-                    <button type="button" class="seg-btn day-btn" data-day="15july">15th July</button>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label style="font-weight:600;">Available Time Slots</label>
-                <div class="time-slots" id="timeSlots">
-                    <div class="time-slot active" data-slot="9-11">⏱ 9 am - 11 am</div>
-                    <div class="time-slot" data-slot="11-1">⏱ 11 am - 1 pm</div>
-                    <div class="time-slot" data-slot="1-3">⏱ 1 pm - 3 pm</div>
-                </div>
-            </div>
-
-            <div class="expected">
-                <div style="font-size:13px; color:#333;"><strong>Expected Delivery date</strong></div>
-                <div class="muted" id="expectedDate">Saturday, 18th August, 2025</div>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <label style="font-weight:600;">Fast Delivery (within 2 days)</label>
-                    <div class="muted">₹50 extra</div>
-                </div>
-                <label class="toggle">
-                    <input type="checkbox" id="fastDeliveryToggle">
-                </label>
-            </div>
-
-            <div style="display:flex; gap:10px;">
-                <button class="secondary-link" id="timeBack">Back</button>
-                <button class="primary-btn" id="timeProceed">Proceed to Next Step</button>
-            </div>
-        </div>
-    </div>
+    @include('site.measurement.partials.timeslot')
 
     <!-- ================== Payment Popup ================== -->
-    <div class="popup-overlay" id="paymentPopup" aria-hidden="true">
-        <div class="popup" role="dialog" aria-modal="true" aria-labelledby="payTitle">
-            <button class="close-popup" id="closePayment">&times;</button>
-            <h2 id="payTitle">Payment</h2>
-
-            <div style="margin-bottom:10px;" class="form-group">
-                <div class="payment-methods">
-                    <div class="pm active" data-method="upi" id="pm-upi">UPI</div>
-                    <div class="pm" data-method="card" id="pm-card">Credit / Debit Card</div>
-                </div>
-            </div>
-
-            <div id="pmDetails">
-                <!-- UPI box -->
-                <div class="upi-box" id="upiBox">
-                    <p style="margin:0 0 8px;">Scan the UPI QR or enter UPI ID</p>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <div style="width:120px;height:120px;background:#f2f2f2;border-radius:10px;display:flex;align-items:center;justify-content:center;">QR</div>
-                        <div style="flex:1;">
-                            <div style="margin-bottom:8px;"><strong>example@upi</strong></div>
-                            <div class="muted">After paying, upload the payment screenshot to confirm.</div>
-                            <div style="margin-top:8px;">
-                                <input type="file" id="upiScreenshot">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card box -->
-                <div class="card-box" id="cardBox" style="display:none; margin-top:10px;">
-                    <label style="display:block; font-weight:600;">Card Details</label>
-                    <input type="text" placeholder="Card number" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e7e7e7; margin-bottom:8px;">
-                    <div style="display:flex; gap:8px;">
-                        <input type="text" placeholder="MM/YY" style="flex:1; padding:10px; border-radius:8px; border:1px solid #e7e7e7;">
-                        <input type="text" placeholder="CVV" style="width:120px; padding:10px; border-radius:8px; border:1px solid #e7e7e7;">
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin-top:14px; display:flex; gap:10px;">
-                <button class="secondary-link" id="paymentBack">Back</button>
-                <button class="primary-btn" id="placeOrderBtn">Place Order</button>
-            </div>
-        </div>
-    </div>
+    @include('site.measurement.partials.payment')
 
     <!-- ================== Order Confirmation Popup ================== -->
     <div class="popup-overlay" id="orderConfirmPopup" aria-hidden="true">
@@ -1029,6 +860,87 @@
         });
 
         // If you want the time slot popup to open after address when saving a new address, you can wire that here.
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Quantity controls
+            $('#increaseQty').on('click', function() {
+                const $input = $('input[name="quantity"]');
+                $input.val(parseInt($input.val()) + 1);
+            });
+
+            $('#decreaseQty').on('click', function() {
+                const $input = $('input[name="quantity"]');
+                const currentVal = parseInt($input.val());
+                if (currentVal > 1) {
+                    $input.val(currentVal - 1);
+                }
+            });
+
+            // Form submission
+            $('#sampleClothingForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                console.log('Form submitted');
+                
+                const $submitBtn = $('#submitSampleClothing');
+                $submitBtn.prop('disabled', true).text('Processing...');
+
+                const formData = new FormData(this);
+                
+                // Log form data for debugging
+                console.log('Form data contents:');
+                for (let pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + pair[1]);
+                }
+
+                $.ajax({
+                    url: '{{ route("sampleClothing.save") }}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        console.log('Success response:', response);
+                        if (response.success) {
+                            alert('Sample clothing details saved successfully!');
+                            // Close current popup and proceed to address
+                            $('#alterationPopup').hide();
+                            setTimeout(() => {
+                                $('#addressPopup').css('display', 'flex');
+                            }, 200);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error status:', status);
+                        console.error('Error:', error);
+                        console.error('Response:', xhr.responseText);
+                        console.error('Status code:', xhr.status);
+                        
+                        $submitBtn.prop('disabled', false).text('Proceed to Next Step');
+                        
+                        if (xhr.status === 401) {
+                            alert('Please login to continue');
+                            window.location.href = '{{ route("login") }}';
+                        } else if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+                            let errorMsg = 'Please fix the following errors:\n';
+                            Object.keys(errors).forEach(key => {
+                                errorMsg += '- ' + errors[key][0] + '\n';
+                            });
+                            alert(errorMsg);
+                        } else if (xhr.status === 500) {
+                            console.error('Server error details:', xhr.responseJSON);
+                            alert('Server error: ' + (xhr.responseJSON?.message || 'Please check the console for details'));
+                        } else {
+                            alert('An error occurred. Status: ' + xhr.status + '. Check console for details.');
+                        }
+                    }
+                });
+            });
+        });
     </script>
 
     <!-- Replace with your real API key -->

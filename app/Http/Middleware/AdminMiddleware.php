@@ -16,17 +16,19 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check()) {
-            // if (Auth::user()->role == 'admin') {
-            //     return $next($request);
-            // } else {
-            //     abort(401, 'Unauthorized action.');
-            // }
-                return $next($request);
-
-        } else {
-            // Redirect unauthenticated users to admin login page
+        // Check if user is authenticated with admin guard
+        if (!Auth::guard('admin')->check()) {
             return redirect()->route('admin.login');
         }
+
+        // Check if authenticated user has admin role
+        if (Auth::guard('admin')->user()->role !== 'admin') {
+            Auth::guard('admin')->logout();
+            return redirect()->route('admin.login')->withErrors([
+                'email' => 'You are not authorized to access the admin panel.'
+            ]);
+        }
+
+        return $next($request);
     }
 }

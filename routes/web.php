@@ -38,13 +38,27 @@ Route::get('/track-order/{id}', [OrderController::class, 'trackOrder'])->name('o
 Route::get('/cart', [OrderController::class, 'cart'])->name('order.cart');
 Route::get('/checkout', [OrderController::class, 'checkout'])->name('order.checkout');
 
+// Cart AJAX Routes
+Route::prefix('cart')->name('cart.')->group(function () {
+    Route::post('/add', [\App\Http\Controllers\CartController::class, 'add'])->name('add');
+    Route::post('/update/{itemId}', [\App\Http\Controllers\CartController::class, 'updateQuantity'])->name('update');
+    Route::delete('/remove/{itemId}', [\App\Http\Controllers\CartController::class, 'remove'])->name('remove');
+    Route::get('/get', [\App\Http\Controllers\CartController::class, 'getCartSummary'])->name('get');
+});
+
+
 //Measurement Options
 Route::get('/measurement-options', [MeasurementController::class, 'measurementOptions'])->name('measurementOptions');
 Route::get('/garment-details', [MeasurementController::class, 'garmentDetails'])->name('garmentDetails');
-Route::get('/manual-measurement', [MeasurementController::class, 'manualMeasurement'])->name('manualMeasurement');//
-Route::get('/fit-sample-cloth', [MeasurementController::class, 'fitSampleCloth'])->name('fitSampleCloth');//
-Route::get('/alteration-instruction', [MeasurementController::class, 'alterationInstruction'])->name('alterationInstruction');//
+Route::get('/manual-measurement', [MeasurementController::class, 'manualMeasurement'])->name('manualMeasurement');
+Route::post('/measurement/save', [MeasurementController::class, 'saveMeasurement'])->name('measurement.save');
+Route::get('/measurement/get', [MeasurementController::class, 'getMeasurements'])->name('measurement.get');
+Route::get('/fit-sample-cloth', [MeasurementController::class, 'fitSampleCloth'])->name('fitSampleCloth');
+Route::post('/sample-clothing/save', [MeasurementController::class, 'saveSampleClothing'])->name('sampleClothing.save');
+Route::get('/alteration-instruction', [MeasurementController::class, 'alterationInstruction'])->name('alterationInstruction');
 Route::get('/checkout', [MeasurementController::class, 'checkout'])->name('checkout');
+Route::post('/address/save', [MeasurementController::class, 'saveAddress'])->name('address.save');
+Route::post('/order/place', [MeasurementController::class, 'placeOrder'])->name('order.place');
 
 //PROFILE
 Route::get('/accounts', [SiteProfileController::class, 'accounts'])->name('accounts');

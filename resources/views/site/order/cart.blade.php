@@ -7,6 +7,7 @@
     <title>Centered Cart Page</title>
   <link rel="icon" type="image/x-icon" href='{{url("site/assets/image/fav-removebg-preview.png")}}'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
         body {
@@ -155,6 +156,20 @@
 
 <body>
 
+    @php
+        $cart = null;
+        if (auth()->check()) {
+            $cart = \App\Models\Cart::where('user_id', auth()->id())->with('items.service.category')->first();
+        } else {
+            $sessionId = session()->getId();
+            $cart = \App\Models\Cart::where('session_id', $sessionId)->with('items.service.category')->first();
+        }
+        
+        $cartItems = $cart ? $cart->items : collect([]);
+        $subtotal = $cart ? $cart->subtotal : 0;
+        $totalQuantity = $cart ? $cart->totalQuantity : 0;
+    @endphp
+
     <div class="page-wrapper">
 
         <!-- Back Button -->
@@ -162,35 +177,57 @@
             <i class="fas fa-arrow-left"></i>
         </div>
 
-        <!-- Cart Box -->
-        <div class="cart-container">
-            <div class="cart-header">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <h2>Your cart</h2>
+        @if($cartItems->isEmpty())
+            <!-- Empty Cart -->
+            <div class="cart-container" style="text-align: center; padding: 60px 25px;">
+                <i class="fa-solid fa-cart-shopping" style="font-size: 64px; color: #ccc; margin-bottom: 20px;"></i>
+                <h2 style="margin: 10px 0;">Your cart is empty</h2>
+                <p style="color: #666; margin-bottom: 30px;">Add some services to get started!</p>
+                <a href="{{ url('/') }}" style="background: #00796b; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; display: inline-block;">Browse Services</a>
             </div>
-            <div class="cart-item">
-                <img src='{{url("site/assets/image/t-shirt.png")}}' alt="Blouse Icon" style="background: #ebebeb;border-radius:10px;
-    padding: 10px;">
+        @else
+            <!-- Cart Box -->
+            <div class="cart-container">
+                <div class="cart-header">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <h2>Your cart</h2>
+                </div>
 
-                <div class="cart-text-block">
-                    <h3>Women Tops ( Blouse Alteration )</h3>
-                    <p>3 services • 1 item (Blouse) • ₹530</p>
+                @foreach($cartItems as $item)
+                    <div class="cart-item">
+                        @if($item->service->icon)
+                            <img src='{{ asset("uploads/services/".$item->service->icon) }}' alt="{{ $item->service->name }}" style="background: #ebebeb; border-radius:10px; padding: 10px; width: 60px; height: 60px; object-fit: contain;">
+                        @else
+                            <img src='{{url("site/assets/image/t-shirt.png")}}' alt="{{ $item->service->name }}" style="background: #ebebeb; border-radius:10px; padding: 10px; width: 60px; height: 60px; object-fit: contain;">
+                        @endif
+
+                        <div class="cart-text-block">
+                            <h3>{{ $item->service->name }}</h3>
+                            <p>{{ $item->quantity }} {{ $item->quantity > 1 ? 'services' : 'service' }} • ₹{{ number_format($item->total, 2) }}</p>
+                            @if($item->service->category)
+                                <p style="font-size: 13px; color: #888;">Category: {{ $item->service->category->name }}</p>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+
+                <div style="border-top: 1px solid #eee; margin-top: 20px; padding-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 16px; color: #666;">Subtotal:</span>
+                        <span style="font-size: 18px; font-weight: 600; color: #00796b;">₹{{ number_format($subtotal, 2) }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 14px; color: #666;">Total Items:</span>
+                        <span style="font-size: 14px; font-weight: 500;">{{ $totalQuantity }}</span>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <a href="{{ url('/') }}" class="add-more">Add More</a>
+                    <a href="{{route('measurementOptions')}}" class="measure-btn">Provide Measurements</a>
                 </div>
             </div>
-
-            <ul class="service-list">
-                <li>Blouse Sleeve Length Alteration ×1</li>
-                <li>Blouse Length Alteration ×1</li>
-                <li>Blouse Neckline Alteration ×1</li>
-            </ul>
-
-
-
-            <div class="buttons">
-                <a href="#" class="add-more">Add More</a>
-                <a href="{{route('measurementOptions')}}" class="measure-btn">Provide Measurements</a>
-            </div>
-        </div>
+        @endif
 
     </div>
 

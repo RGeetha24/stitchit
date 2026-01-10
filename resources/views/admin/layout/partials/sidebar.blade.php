@@ -7,18 +7,20 @@
 
     <ul class="menu">
 
+        @php
+            $isAdmin = auth()->guard('admin')->check() && auth()->guard('admin')->user()->role === 'admin';
+        @endphp
+        
+        @if($isAdmin || (auth()->guard('admin')->check() && auth()->guard('admin')->user()->canAccess('Dashboard')))
         <li class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <a href="{{route('admin.dashboard')}}">
                 <img src='{{url("admin/assets/images/icon/Category.png")}}' class="menu-icon">
                 Dashboard
             </a>
         </li>
+        @endif
 
-        @php
-            $isAdmin = auth()->check() && auth()->user()->role === 'admin';
-        @endphp
-
-        @if($isAdmin || (auth()->check() && auth()->user()->canAccess('View Roles')))
+        @if($isAdmin || (auth()->guard('admin')->check() && auth()->guard('admin')->user()->canAccess('View Roles')))
         <li class="{{ request()->routeIs('admin.roles.*', 'admin.permissions.*') ? 'active' : '' }}">
             <a href="#" class="menu-toggle" data-toggle="roles-submenu">
                 <img src='{{url("admin/assets/images/icon/Setting.png")}}' class="menu-icon">
@@ -42,7 +44,7 @@
         </li>
         @endif
 
-        @if($isAdmin || (auth()->check() && auth()->user()->canAccess('View Users')))
+        @if($isAdmin || (auth()->guard('admin')->check() && auth()->guard('admin')->user()->canAccess('View Users')))
         <li class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
             <a href="{{ route('admin.users.index') }}">
                 <img src='{{ url("admin/assets/images/icon/Document.png") }}' class="menu-icon">
@@ -51,7 +53,7 @@
         </li>
         @endif
         
-        @if($isAdmin || (auth()->check() && auth()->user()->canAccess('View Categories')))
+        @if($isAdmin || (auth()->guard('admin')->check() && auth()->guard('admin')->user()->canAccess('View Categories')))
         <li class="{{ request()->routeIs('admin.category.*', 'admin.categories.*', 'admin.services.*') ? 'active' : '' }}">
             <a href="#" class="menu-toggle" data-toggle="category-submenu">
                 <img src='{{url("admin/assets/images/icon/Chart.png")}}' class="menu-icon">
@@ -81,7 +83,7 @@
         </li>
         @endif
 
-        @if($isAdmin || (auth()->check() && auth()->user()->canAccess('View Orders')))
+        @if($isAdmin || (auth()->guard('admin')->check() && auth()->guard('admin')->user()->canAccess('View Orders')))
         <li class="{{ request()->routeIs('admin.orders') ? 'active' : '' }}">
             <a href="{{route('admin.orders')}}">
                 <img src='{{url("admin/assets/images/icon/Chart.png")}}' class="menu-icon">
@@ -90,7 +92,7 @@
         </li>
         @endif
 
-        @if($isAdmin || (auth()->check() && auth()->user()->canAccess('View Route Optimization')))
+        @if($isAdmin || (auth()->guard('admin')->check() && auth()->guard('admin')->user()->canAccess('View Route Optimization')))
         <li class="{{ request()->routeIs('admin.routeOptimize') ? 'active' : '' }}">
             <a href="{{route('admin.routeOptimize')}}">
                 <img src='{{url("admin/assets/images/icon/fa7-solid_route.png")}}' class="menu-icon">
@@ -99,7 +101,7 @@
         </li>
         @endif
 
-        @if($isAdmin || (auth()->check() && auth()->user()->canAccess('View Pickups')))
+        @if($isAdmin || (auth()->guard('admin')->check() && auth()->guard('admin')->user()->canAccess('View Pickups')))
         <li class="{{ request()->routeIs('admin.pickup') ? 'active' : '' }}">
             <a href="{{route('admin.pickup')}}">
                 <img src='{{url("admin/assets/images/icon/Ticket.png")}}' class="menu-icon">
@@ -108,7 +110,7 @@
         </li>
         @endif
 
-        @if($isAdmin || (auth()->check() && auth()->user()->canAccess('View Tailors')))
+        @if($isAdmin || (auth()->guard('admin')->check() && auth()->guard('admin')->user()->canAccess('View Tailors')))
         <li class="{{ request()->routeIs('admin.tailor') ? 'active' : '' }}">
             <a href="{{route('admin.tailor')}}">
                 <img src='{{url("admin/assets/images/icon/Document.png")}}' class="menu-icon">
@@ -117,7 +119,7 @@
         </li>
         @endif
 
-        @if($isAdmin || (auth()->check() && auth()->user()->canAccess('View Financials')))
+        @if($isAdmin || (auth()->guard('admin')->check() && auth()->guard('admin')->user()->canAccess('View Financials')))
         <li class="{{ request()->routeIs('admin.financial') ? 'active' : '' }}">
             <a href="{{route('admin.financial')}}">
                 <img src='{{url("admin/assets/images/icon/Vector.png")}}' class="menu-icon">
@@ -126,7 +128,7 @@
         </li>
         @endif
 
-        @if($isAdmin || (auth()->check() && auth()->user()->canAccess('View Reports')))
+        @if($isAdmin || (auth()->guard('admin')->check() && auth()->guard('admin')->user()->canAccess('View Reports')))
         <li class="{{ request()->routeIs('admin.report') ? 'active' : '' }}">
             <a href="{{route('admin.report')}}">
                 <img src='{{url("admin/assets/images/icon/Activity.png")}}' class="menu-icon">
@@ -135,7 +137,7 @@
         </li>
         @endif
 
-        @if($isAdmin || (auth()->check() && auth()->user()->canAccess('Manage Settings')))
+        @if($isAdmin || (auth()->guard('admin')->check() && auth()->guard('admin')->user()->canAccess('Manage Settings')))
         <li>
             <a href="#">
                 <img src='{{url("admin/assets/images/icon/Setting.png")}}' class="menu-icon">
