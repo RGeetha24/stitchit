@@ -30,6 +30,8 @@ Route::middleware(['isAdmin'])->group(function () {
         Route::resource('services', ServiceController::class)->names('services');
 
         Route::get('/orders', [AdminOrderController::class, 'orders'])->name('orders');
+        Route::get('/orders/{id}', [AdminOrderController::class, 'view'])->name('orders.view');
+        Route::put('/orders/{id}/update-status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
         Route::get('/pickup',[AdminOrderController::class, 'pickup'])->name('pickup');
         Route::get('/routeOptimize', [RouteController::class, 'routeOptimize'])->name('routeOptimize');
         Route::get('/tailor',[UserController::class, 'tailor'])->name('tailor');

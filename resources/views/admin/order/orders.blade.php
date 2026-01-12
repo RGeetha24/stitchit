@@ -201,6 +201,58 @@
         /* light green */
         transition: background 0.5s ease;
     }
+
+    .status {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .status.pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status.confirmed {
+        background: #cfe2ff;
+        color: #084298;
+    }
+
+    .status.inprogress {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .status.readyfordelivery {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status.delivered {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status.cancelled {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .status.received {
+        background: #e7f3ff;
+        color: #004085;
+    }
+
+    .status.progress {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status.completed {
+        background: #d4edda;
+        color: #155724;
+    }
 </style>
 @endsection
 
@@ -211,6 +263,8 @@
     <!-- Main Content -->
     <div class="main">
     @include('admin.layout.topbar')
+    
+    @if(session('new_order'))
     <!-- Order Notification Box -->
     <div id="newOrderPopup" class="order-notification">
         <div class="notif-left">
@@ -219,14 +273,15 @@
 
             <div class="notif-info">
                 <h3>New Order Received</h3>
-                <p class="order-id">Order ID: #876364</p>
-                <p class="order-category">Order Category: Shirt Length Alteration</p>
+                <p class="order-id">Order ID: {{ session('new_order')['order_number'] }}</p>
+                <p class="order-category">{{ session('new_order')['item_name'] }}</p>
             </div>
         </div>
 
-        <button class="notif-btn" onclick="markOrderAsHighlighted('#876364')">Okay</button>
+        <button class="notif-btn" onclick="markOrderAsHighlighted('{{ session('new_order')['order_number'] }}')">Okay</button>
 
     </div>
+    @endif
 
 
     <!-- Dashboard Section -->
@@ -246,11 +301,14 @@
                     <div class="recent-header">
                         <h1>Recent Orders</h1>
 
-                        <select class="sort-filter">
+                        <select class="sort-filter" onchange="filterOrders(this.value)">
                             <option value="all">All Orders</option>
-                            <option value="received">Received</option>
-                            <option value="progress">In Progress</option>
-                            <option value="completed">Completed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Ready for Delivery">Ready for Delivery</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
                         </select>
                     </div>
 
@@ -259,122 +317,55 @@
                             <tr>
                                 <th>Order ID</th>
                                 <th>Customer Name</th>
-                                <th>Tailor</th>
+                                <th>Items</th>
                                 <th>Status</th>
-                                <th>Pickup/Delivery</th>
-                                <th>Order Type</th>
+                                <th>Order Date</th>
+                                <th>Total Amount</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            <tr id="order-876364">
-                                <td>#876364</td>
-                                <td>John Doe</td>
-                                <td>Tom</td>
-                                <td><span class="status received">Received</span></td>
-                                <td>04/04/2024</td>
-                                <td>Shirt Length Altration</td>
+                            @forelse($orders as $order)
+                            <tr id="order-{{ $order->order_number }}">
+                                <td>{{ $order->order_number }}</td>
+                                <td>{{ $order->user->name ?? 'N/A' }}</td>
+                                <td>
+                                    {{ $order->items->count() }} {{ Str::plural('item', $order->items->count()) }}
+                                    @if($order->items->first())
+                                        <br><small style="color: #666;">{{ Str::limit($order->items->first()->item_name, 20) }}</small>
+                                    @endif
+                                </td>
+                                <td>
+                                    <span class="status {{ strtolower(str_replace(' ', '', $order->status)) }}">
+                                        {{ $order->status }}
+                                    </span>
+                                </td>
+                                <td>{{ $order->created_at->format('d/m/Y') }}</td>
+                                <td>₹{{ number_format($order->total, 2) }}</td>
+                                <td>
+                                    <a href="{{ route('admin.orders.view', $order->id) }}" style="color: #078f75; text-decoration: none;">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </td>
                             </tr>
-
-
+                            @empty
                             <tr>
-                                <td>#876368</td>
-                                <td>Alice Green</td>
-                                <td>Emma</td>
-                                <td><span class="status progress">In Progress</span></td>
-                                <td>04/04/2024</td>
-                                   <td>Shirt Length Altration</td>
+                                <td colspan="7" style="text-align: center; padding: 40px; color: #999;">
+                                    <i class="fas fa-inbox" style="font-size: 48px; display: block; margin-bottom: 10px;"></i>
+                                    No orders found
+                                </td>
                             </tr>
-
-                            <!-- remaining rows -->
-                            <tr>
-                                <td>#876412</td>
-                                <td>Michael Brown</td>
-                                <td>William</td>
-                                <td><span class="status completed">Completed</span></td>
-                                <td>04/04/2024</td>
-                                   <td>Shirt Length Altration</td>
-                            </tr>
-
-                            <!-- duplicate rows (your data) -->
-                            <tr>
-                                <td>#876412</td>
-                                <td>Michael Brown</td>
-                                <td>William</td>
-                                <td><span class="status progress">In Progress</span></td>
-                                <td>04/04/2024</td>
-                                   <td>Shirt Length Altration</td>
-                            </tr>
-                            <tr>
-                                <td>#876412</td>
-                                <td>Michael Brown</td>
-                                <td>William</td>
-                                <td><span class="status completed">Completed</span></td>
-                                <td>04/04/2024</td>
-                                   <td>Shirt Length Altration</td>
-                            </tr>
-                            <tr>
-                                <td>#876412</td>
-                                <td>Michael Brown</td>
-                                <td>William</td>
-                                <td><span class="status progress">In Progress</span></td>
-                                <td>04/04/2024</td>
-                                   <td>Shirt Length Altration</td>
-                            </tr>
-                            <tr>
-                                <td>#876412</td>
-                                <td>Michael Brown</td>
-                                <td>William</td>
-                                <td><span class="status completed">Completed</span></td>
-                                <td>04/04/2024</td>
-                                   <td>Shirt Length Altration</td>
-                            </tr>
-                            <tr>
-                                <td>#876412</td>
-                                <td>Michael Brown</td>
-                                <td>William</td>
-                                <td><span class="status received">Received</span></td>
-                                <td>04/04/2024</td>
-                                   <td>Shirt Length Altration</td>
-                            </tr>
-                            <tr>
-                                <td>#876412</td>
-                                <td>Michael Brown</td>
-                                <td>William</td>
-                                <td><span class="status completed">Completed</span></td>
-                                <td>04/04/2024</td>
-                                   <td>Shirt Length Altration</td>
-                            </tr>
-                            <tr>
-                                <td>#876412</td>
-                                <td>Michael Brown</td>
-                                <td>William</td>
-                                <td><span class="status received">Received</span></td>
-                                <td>04/04/2024</td>
-                                   <td>Shirt Length Altration</td>
-                            </tr>
-                            <tr>
-                                <td>#876412</td>
-                                <td>Michael Brown</td>
-                                <td>William</td>
-                                <td><span class="status received">Received</span></td>
-                                <td>04/04/2024</td>
-                                   <td>Shirt Length Altration</td>
-                            </tr>
-                            <tr>
-                                <td>#876412</td>
-                                <td>Michael Brown</td>
-                                <td>William</td>
-                                <td><span class="status received">Received</span></td>
-                                <td>04/04/2024</td>
-                                   <td>Shirt Length Altration</td>
-                            </tr>
-
+                            @endforelse
                         </tbody>
                     </table>
 
                     <!-- PAGINATION -->
-                    <div class="pagination" id="pagination"></div>
+                    @if($orders->hasPages())
+                    <div class="pagination" id="pagination">
+                        {{ $orders->links() }}
+                    </div>
+                    @endif
 
                 </div>
 
@@ -413,9 +404,12 @@
 <script>
     function markOrderAsHighlighted(orderId) {
         // Remove popup
-        document.getElementById("newOrderPopup").style.display = "none";
+        const popup = document.getElementById("newOrderPopup");
+        if (popup) {
+            popup.style.display = "none";
+        }
 
-        // Convert #876364 → order-876364 (row ID)
+        // Convert order number to row ID
         let rowId = "order-" + orderId.replace("#", "");
 
         // Find row
@@ -430,6 +424,27 @@
             }, 6000);
         }
     }
+
+    function filterOrders(status) {
+        // Reload page with status filter
+        const url = new URL(window.location.href);
+        if (status === 'all') {
+            url.searchParams.delete('status');
+        } else {
+            url.searchParams.set('status', status);
+        }
+        window.location.href = url.toString();
+    }
+
+    // Set selected option based on URL parameter
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status') || 'all';
+        const selectElement = document.querySelector('.sort-filter');
+        if (selectElement) {
+            selectElement.value = status;
+        }
+    });
 </script>
 @endsection
 
